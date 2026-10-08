@@ -1,4 +1,5 @@
 import { ShieldAlert, TrendingDown, TrendingUp } from 'lucide-react'
+import { useState } from 'react'
 import type { ReactNode } from 'react'
 
 import { buttonStyles } from '#/components/ui/button-styles'
@@ -71,8 +72,9 @@ export function WatchlistItem({
 }: {
   row: WatchlistRowData
   now: string
-  onUntrack: (listingId: string) => void
+  onUntrack: (listingId: string) => Promise<void>
 }) {
+  const [untrackFailed, setUntrackFailed] = useState(false)
   const removed = row.line.kind === 'removed'
   const status = removed ? copy.removed : verdictLabels[row.verdict]
   const price = formatPrice(row.priceCents)
@@ -105,12 +107,20 @@ export function WatchlistItem({
             type="button"
             aria-label={copy.untrackLabel(row.title)}
             onClick={() => {
-              onUntrack(row.listingId)
+              setUntrackFailed(false)
+              onUntrack(row.listingId).catch(() => {
+                setUntrackFailed(true)
+              })
             }}
             className={buttonStyles({ variant: 'tertiary', size: 'medium' })}
           >
             {copy.untrack}
           </button>
+          {untrackFailed && (
+            <p role="alert" className="w-full text-caption text-text-secondary">
+              {copy.untrackFailed}
+            </p>
+          )}
         </div>
       )}
     </li>

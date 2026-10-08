@@ -46,5 +46,15 @@ export const homeQueryOptions = () =>
 export const untrackListingFn = createServerFn({ method: 'POST' })
   .validator(z.object({ listingId: z.uuid() }))
   .handler(async ({ data }) => {
-    await untrackListing(homeDeps(), await readSession(), data.listingId)
+    const session = await readSession()
+    try {
+      await untrackListing(homeDeps(), session, data.listingId)
+    } catch (error) {
+      console.error('[home] untrack failed', {
+        userId: session?.userId,
+        listingId: data.listingId,
+        error,
+      })
+      throw error
+    }
   })

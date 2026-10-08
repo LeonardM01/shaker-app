@@ -27,9 +27,7 @@ function HomeRoute() {
       home={data}
       // Fire and forget: the query's own state re-renders the screen.
       onRetry={() => void refetch()}
-      onUntrack={(listingId) => {
-        untrack.mutate(listingId)
-      }}
+      onUntrack={untrack.mutateAsync}
     />
   )
 }
@@ -41,7 +39,7 @@ function HomeError() {
       home={{ kind: 'unavailable', viewer: null }}
       // Fire and forget: invalidating re-runs the loader and re-renders.
       onRetry={() => void router.invalidate()}
-      onUntrack={() => undefined}
+      onUntrack={() => Promise.resolve()}
     />
   )
 }

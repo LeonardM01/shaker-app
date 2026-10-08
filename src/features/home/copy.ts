@@ -83,6 +83,7 @@ export const homeCopy = {
       `Zadnja cijena ${formatPrice(priceCents)}, uklonjen ${ago}. Možda je prodan.`,
     untrack: 'Ukloni s popisa',
     untrackLabel: (title: string) => `Ukloni s popisa: ${title}`,
+    untrackFailed: 'Uklanjanje nije uspjelo. Pokušaj ponovo.',
   },
 
   empty: {

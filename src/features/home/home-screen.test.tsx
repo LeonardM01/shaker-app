@@ -46,7 +46,7 @@ function signedIn(overrides: Partial<Extract<HomeResult, { kind: 'signed_in' }>>
 
 async function renderHome(home: HomeResult) {
   const onRetry = vi.fn()
-  const onUntrack = vi.fn()
+  const onUntrack = vi.fn((_listingId: string) => Promise.resolve())
   const rootRoute = createRootRoute({ component: Outlet })
   const routeTree = rootRoute.addChildren([
     createRoute({
@@ -132,6 +132,17 @@ describe('Početna: pasting a link', () => {
     )
     expect(field()).toHaveValue(input)
     expect(router.state.location.pathname).toBe('/app')
+  })
+
+  it('announces a rejection through a live region', async () => {
+    const { user } = await renderHome({ kind: 'guest' })
+
+    await user.type(field(), 'iphone 13 pro zagreb{Enter}')
+    expect(within(screen.getByRole('status')).getByText(/Ovo nije link na oglas/)).toBeInTheDocument()
+
+    await user.clear(field())
+    await user.type(field(), 'https://www.vinted.hr/items/123{Enter}')
+    expect(within(screen.getByRole('status')).getByText('Ovu stranicu još ne čitamo')).toBeInTheDocument()
   })
 
   it.each(['https://www.vinted.hr/items/123-jakna', 'https://www.ebay.de/itm/123'])(
@@ -280,6 +291,26 @@ describe('Početna: signed in', () => {
     await user.click(remove[0]!)
 
     expect(onUntrack).toHaveBeenCalledWith('bike')
+    expect(screen.queryByText(/Uklanjanje nije uspjelo/)).not.toBeInTheDocument()
+  })
+
+  it('says so when removing a listing fails', async () => {
+    const { onUntrack, user } = await renderHome(
+      signedIn({
+        changed: [
+          row({
+            listingId: 'bike',
+            title: 'Scott Scale 970',
+            line: { kind: 'removed', removedAt: minutesAgo(60) },
+          }),
+        ],
+      }),
+    )
+    onUntrack.mockRejectedValueOnce(new Error('network'))
+
+    await user.click(screen.getByRole('button', { name: /Ukloni s popisa/ }))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('Uklanjanje nije uspjelo. Pokušaj ponovo.')
   })
 
   it('shows the update banner with the market comparison when it has one', async () => {

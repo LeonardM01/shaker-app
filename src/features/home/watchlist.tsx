@@ -17,7 +17,7 @@ export function Watchlist({
   changed: WatchlistRow[]
   unchanged: WatchlistRow[]
   now: string
-  onUntrack: (listingId: string) => void
+  onUntrack: (listingId: string) => Promise<void>
 }) {
   if (changed.length === 0 && unchanged.length === 0) {
     return (

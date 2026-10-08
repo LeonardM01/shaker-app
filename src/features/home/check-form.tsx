@@ -53,23 +53,29 @@ export function CheckForm() {
         tone={tone}
         describedBy={rejection ? messageId : undefined}
       />
-      <p role="status" className="px-6 text-caption text-text-secondary empty:hidden">
-        {recognition.kind === 'recognised' ? homeCopy.field.recognised(recognition.marketplace) : ''}
-      </p>
-      {rejection === 'not_a_listing' && (
-        <p id={messageId} className="px-6 text-caption text-text-danger">
-          {homeCopy.field.notAListing}
-        </p>
-      )}
-      {rejection === 'unsupported_site' && (
-        <div id={messageId} className="flex gap-3 rounded-lg bg-bg-info-subtle p-4">
-          <Info aria-hidden size={20} className="mt-0.5 shrink-0 text-icon-info" />
-          <div>
-            <p className="text-title">{homeCopy.field.unsupportedTitle}</p>
-            <p className="text-body-small text-text-secondary">{homeCopy.field.unsupportedBody}</p>
+      {/* One polite live region, present from the start, so the hint and the
+          rejection messages are announced as they appear. */}
+      <div role="status" className="flex flex-col gap-3 empty:hidden">
+        {recognition.kind === 'recognised' && (
+          <p className="px-6 text-caption text-text-secondary">
+            {homeCopy.field.recognised(recognition.marketplace)}
+          </p>
+        )}
+        {rejection === 'not_a_listing' && (
+          <p id={messageId} className="px-6 text-caption text-text-danger">
+            {homeCopy.field.notAListing}
+          </p>
+        )}
+        {rejection === 'unsupported_site' && (
+          <div id={messageId} className="flex gap-3 rounded-lg bg-bg-info-subtle p-4">
+            <Info aria-hidden size={20} className="mt-0.5 shrink-0 text-icon-info" />
+            <div>
+              <p className="text-title">{homeCopy.field.unsupportedTitle}</p>
+              <p className="text-body-small text-text-secondary">{homeCopy.field.unsupportedBody}</p>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
       <div className="flex flex-wrap items-center gap-2">
         <span aria-hidden className="hidden text-body-small text-text-tertiary sm:inline">
           {homeCopy.field.supportedLabel}

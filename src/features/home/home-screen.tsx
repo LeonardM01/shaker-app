@@ -14,7 +14,8 @@ import { WatchlistUnavailable } from '#/features/home/watchlist-unavailable'
 type HomeScreenProps = {
   home: HomeResult
   onRetry: () => void
-  onUntrack: (listingId: string) => void
+  /** Rejects when the listing couldn't be removed. */
+  onUntrack: (listingId: string) => Promise<void>
 }
 
 function AccountControls({ home }: { home: HomeResult }) {

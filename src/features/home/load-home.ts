@@ -125,7 +125,10 @@ async function toRow(
     marketplace: listing.marketplace,
     city: listing.city,
     photoUrl: listing.photoKey ? await deps.signPhotoUrl(listing.photoKey) : null,
-    verdict: state.latest.verdict,
+    // "Risk" without its evidence would be red with nothing beside it; show
+    // it as unknown instead.
+    verdict:
+      state.latest.verdict === 'risk' && !state.latest.riskEvidence ? 'no_data' : state.latest.verdict,
     priceCents: state.latest.priceCents,
     line: lineOf(state),
   }

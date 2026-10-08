@@ -165,6 +165,16 @@ describe('loadHome', () => {
       expect(await lineOf(store)).toEqual({ kind: 'risk_evidence', evidence })
     })
 
+    it('shows a risk verdict that carries no evidence as no data', async () => {
+      const store = new InMemoryHomeStore()
+        .addListing({ id: 'x' }, [{ checkedAt: after, priceCents: 9_500, verdict: 'risk' }])
+        .track(ana.userId, 'x')
+
+      const result = await signedIn(store)
+
+      expect(result.unchanged[0]?.verdict).toBe('no_data')
+    })
+
     it('keeps the evidence next to a risk verdict even when it is not new', async () => {
       const store = new InMemoryHomeStore().addListing({ id: 'x' }, [
         { checkedAt: before, priceCents: 10_000, verdict: 'risk', riskEvidence: evidence },
