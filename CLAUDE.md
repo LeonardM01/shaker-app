@@ -29,14 +29,15 @@ Figma: https://www.figma.com/design/yYrUqxBmK1rH5djf9hvIF4/SHAKER (landing page 
 | App framework | [TanStack Start](https://tanstack.com/start) (React, TanStack Router, server functions), TypeScript |
 | Hosting | Vercel (TanStack Start builds through the `nitro/vite` plugin) |
 | Database | Neon serverless Postgres |
-| Auth | Clerk (`@clerk/tanstack-react-start`), only where an account is actually needed |
+| Auth | Neon Auth (managed Better Auth, beta), only where an account is actually needed. Users live in the `neon_auth` schema of our own database |
+| Asset storage | Neon Object Storage buckets (S3-compatible, beta), branch together with the database |
 | Lint / format | ESLint + Prettier, see `docs/research/eslint-prettier-tanstack-start.md` |
 
 The landing page and the web app are both TanStack Start. Whether they ship as one app (landing as public, prerendered routes) or two is not decided yet; record that decision as an ADR in `docs/adr/` when it's made. Nothing is scaffolded yet, so update this file with the real commands (dev, build, lint, typecheck, test) once `package.json` exists.
 
 ## Coding standards
 
-**Read `CODING_STANDARDS.md` before writing or reviewing code.** It holds the TypeScript, React, TanStack Start, Neon, Clerk and Vercel rules for this repo. The `/code-review` skill checks changes against it.
+**Read `CODING_STANDARDS.md` before writing or reviewing code.** It holds the TypeScript, React, TanStack Start, Neon (Postgres, Auth, Object Storage) and Vercel rules for this repo. The `/code-review` skill checks changes against it.
 
 ## Repo map
 

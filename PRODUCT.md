@@ -33,4 +33,4 @@ Croatian first. English comes later via i18n. All design-system examples use Cro
 
 ## Stack
 
-Landing page and web app: TanStack Start (React, TypeScript) on Vercel, Neon Postgres, Clerk for auth where an account is needed. Browser extension stack not decided yet. See `CLAUDE.md` and `CODING_STANDARDS.md`. Figma file: https://www.figma.com/design/yYrUqxBmK1rH5djf9hvIF4/SHAKER.
+Landing page and web app: TanStack Start (React, TypeScript) on Vercel, Neon Postgres, Neon Auth where an account is needed, Neon Object Storage for assets. Browser extension stack not decided yet. See `CLAUDE.md` and `CODING_STANDARDS.md`. Figma file: https://www.figma.com/design/yYrUqxBmK1rH5djf9hvIF4/SHAKER.

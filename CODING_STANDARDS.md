@@ -1,12 +1,23 @@
 # Coding standards
 
-Rules for every change in this repo, whether a person or an agent writes it. Stack: TanStack Start (React + TanStack Router), TypeScript, Neon Postgres, Clerk, Vercel. If a rule here conflicts with what a library's current docs say, the docs win: fix the code, then fix this file.
+Rules for every change in this repo, whether a person or an agent writes it. Stack: TanStack Start (React + TanStack Router), TypeScript, Neon (Postgres, Auth, Object Storage), Vercel. If a rule here conflicts with what a library's current docs say, the docs win: fix the code, then fix this file.
 
 Lint and format configuration (ESLint flat config, Prettier, tsconfig strictness) is specified in `docs/research/eslint-prettier-tanstack-start.md`. The linter enforces what it can; this file covers what it can't.
 
+## Tooling
+
+- **One gate:** `pnpm check` runs `tsc`, `eslint --max-warnings 0` and `prettier --check .`. It must pass before a change counts as finished. Warnings count as failures.
+- **pnpm**, not npm. Some lint plugins still declare old ESLint peer ranges, and npm refuses to install them.
+- **ESLint 10 with typed linting** (typescript-eslint `strictTypeChecked` + `stylisticTypeChecked`, plus the React Hooks, `@eslint-react`, jsx-a11y, TanStack Router and Query, import-x and unicorn rules). Prettier handles formatting and runs separately; don't add `eslint-plugin-prettier`.
+- **Two TypeScript versions on purpose.** `tsc` uses TypeScript 7. typescript-eslint uses TypeScript 6, installed under the `typescript` name through an npm alias, because typescript-eslint doesn't support TS 7 yet. Don't "fix" this by upgrading `typescript` to 7, which breaks typed linting.
+- **Keep `verbatimModuleSyntax` off.** TanStack Start warns it can leak server code into client bundles. `@typescript-eslint/consistent-type-imports` enforces `import type` instead.
+- `throw redirect()` and `throw notFound()` are allowed by an `only-throw-error` allowlist (`Redirect`, `NotFoundError`). Don't wrap them in `Error` to satisfy the linter.
+- Route options follow the order the TanStack Router lint rule enforces (`validateSearch` → `loaderDeps` → `context` → `beforeLoad` → `loader` → the rest), because type inference depends on it.
+- An `eslint-disable` needs a `-- reason` comment and must target a specific rule. Blanket disables fail lint.
+
 ## Ground rules
 
-- **Check the docs before writing framework code.** TanStack Start, Router and Clerk APIs change between releases. Look up the installed version's docs (context7 or the official site) instead of writing from memory, and match the version in `package.json`.
+- **Check the docs before writing framework code.** TanStack Start, Router and Neon Auth APIs change between releases (Neon Auth and Object Storage are in beta). Look up the installed version's docs (context7 or the official site) instead of writing from memory, and match the version in `package.json`.
 - **Small, finished changes.** One concern per change. No commented-out code, no `TODO` without an issue link, no unused exports.
 - **Green before done.** `typecheck`, `lint` and tests pass before a change counts as finished. Never silence a check to get there: no `// @ts-ignore`, no `eslint-disable` without a comment saying why, no `any`.
 - **Follow the surrounding code.** Match the naming, structure and comment density of nearby files before reaching for a new pattern.
@@ -37,11 +48,11 @@ Lint and format configuration (ESLint flat config, Prettier, tsconfig strictness
 - **Loaders are isomorphic**: they run on the server for the first request and in the browser on client navigation. Never read secrets, env vars or the database directly in a loader. Call a server function instead.
 - **Server functions (`createServerFn`) are the only path from UI to server-side work.** Each one:
   - validates its input with a Zod schema in the validator step (check the installed version for the method name),
-  - checks auth itself if it touches user data (see Clerk below); routes protecting it is not enough, since server functions are callable endpoints,
+  - checks auth itself if it touches user data (see Auth below); routes protecting it is not enough, since server functions are callable endpoints,
   - returns plain serialisable data, never DB rows with columns the client shouldn't see,
   - uses `method: 'POST'` for anything that writes.
 - Use `createServerOnlyFn` (or `.server.ts` modules) for code that must never be bundled for the client, such as DB clients and secret-bearing helpers.
-- Use server routes (`server.handlers` on a file route) only for things that need a real HTTP endpoint: webhooks (Clerk, payments), the extension's API, health checks.
+- Use server routes (`server.handlers` on a file route) only for things that need a real HTTP endpoint: webhooks (Neon Auth events, payments), the extension's API, health checks.
 - **Search params are state.** Validate them with `validateSearch` and a Zod schema; read them with `Route.useSearch()`.
 - Use `<Link>` and `useNavigate` with typed `to` and `params`, never string-built URLs.
 - Every route that loads data defines `pendingComponent`, `errorComponent` and, where relevant, `notFoundComponent`. Throw `notFound()` / `redirect()` from loaders and server functions; don't return error flags.
@@ -64,19 +75,28 @@ Lint and format configuration (ESLint flat config, Prettier, tsconfig strictness
 - Store money as integer cents (`integer`/`bigint`), never floats. Store timestamps as `timestamptz` in UTC; format for `hr-HR` only at render time.
 - If an ORM or query builder is added, record the choice as an ADR and add its rules here.
 
-## Auth (Clerk)
+## Auth (Neon Auth)
 
+- Neon Auth is managed Better Auth. Users and sessions live in the `neon_auth` schema of our own database and branch with it. Use Neon's SDK (`@neondatabase/neon-js`, `@neondatabase/auth-ui`); check the installed version's docs, since the TanStack Start server-side API is still settling.
 - Auth is opt-in per feature. Public pages (landing, a shared report) must work signed out.
-- `clerkMiddleware()` is registered once in `src/start.ts` under `requestMiddleware`.
-- On the server, get the user with `auth()` from `@clerk/tanstack-react-start/server` inside the server function or server route that needs it. Check `isAuthenticated` and scope every query by `userId`. The client never sends a user ID the server trusts.
+- On the server, read the session from the request inside the server function or server route that needs it. Reject when there is none and scope every query by the session's user ID. The client never sends a user ID the server trusts.
 - Route guards (`beforeLoad` + `redirect`) are for UX. The authorisation check that matters lives in the server function.
-- Verify Clerk webhooks with their signature before acting on them.
-- Store only the Clerk `userId` as the foreign key in our DB; don't copy profile data we don't need.
+- Never write to the `neon_auth` schema ourselves; it belongs to the auth service. Our tables reference `neon_auth.user.id` and don't copy profile data we don't need.
+- Verify Neon Auth webhooks before acting on them.
+
+## Asset storage (Neon Object Storage)
+
+- Files (uploaded images, listing snapshots, generated assets) go in Neon Object Storage buckets. Postgres stores the object key and metadata, never the file bytes.
+- Talk to it with the S3 SDK (`@aws-sdk/client-s3`) pointed at the branch endpoint, with `forcePathStyle: true`. Endpoint and credentials come from the validated env module.
+- Buckets are `private` by default. Use `public_read` only for assets meant for anyone (landing page images). Serve private objects through short-lived presigned URLs created in a server function after the auth check.
+- Browser uploads go through a presigned upload URL from a server function that has already checked auth, content type and size. Never pass storage credentials to the client.
+- Object keys are built by the server, not taken from user input (`{feature}/{userId}/{uuid}.{ext}`).
+- Buckets branch with the database, so preview deployments get their own copy. Don't point a preview at the production branch's bucket.
 
 ## Environment and secrets (Vercel)
 
 - All env vars are read through one module that parses them with Zod at startup and fails fast on missing values. Nothing else reads `process.env` / `import.meta.env` directly.
-- Only variables prefixed `VITE_` reach the browser bundle. Secrets (`CLERK_SECRET_KEY`, `DATABASE_URL`, scraping credentials) never carry that prefix.
+- Only variables prefixed `VITE_` reach the browser bundle. Secrets (`DATABASE_URL`, the `AWS_*` storage credentials, scraping credentials) never carry that prefix.
 - Configure values per Vercel environment (Development, Preview, Production). Never commit `.env*` files other than a `.env.example` with placeholder values.
 - Long or heavy work (scraping a batch of comparable listings) doesn't belong in a request handler that a user waits on. Design it to run as a background or scheduled job, and keep request handlers within Vercel function limits.
 
