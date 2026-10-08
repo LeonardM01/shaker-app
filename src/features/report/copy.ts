@@ -245,10 +245,12 @@ export const reportCopy = {
     missing: (label: string) => `Nije navedeno: ${midSentence(label)}`,
     confirmed: (labels: string[]) => {
       const last = labels.at(-1) ?? ''
-      if (labels.length <= 1) return `${last} se slaže`
       const [first = '', ...rest] = labels.slice(0, -1)
-      const listed = [first, ...rest.map(midSentence)].join(', ') + ` i ${midSentence(last)}`
-      return `${listed} slažu se`
+      const sentence =
+        labels.length <= 1
+          ? `${last} se slaže`
+          : `${[first, ...rest.map(midSentence)].join(', ')} i ${midSentence(last)} slažu se`
+      return `${sentence.charAt(0).toLocaleUpperCase('hr-HR')}${sentence.slice(1)}`
     },
     confirmedDetail: 'Naslov, opis i fotografije opisuju isto.',
     add: 'Dodaj u pitanja',

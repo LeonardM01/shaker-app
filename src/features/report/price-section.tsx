@@ -87,54 +87,59 @@ export function PriceSection({ report }: { report: Report }) {
 
   return (
     <ReportSection id="cijena" title={copy.heading} aside={<p className="text-body-small text-text-tertiary">{copy.window}</p>}>
-      <div className="flex flex-col gap-8 rounded-xl border border-border-default p-6 md:flex-row">
-        <div className="flex flex-col gap-3 md:w-90 md:shrink-0">
-          <PriceRangeBar
-            dots={price.dots}
-            market={price.market}
-            priceCents={listing.priceCents}
-            fairBand={fairBand}
-            labels={{
-              title: copy.range,
-              count: copy.comparableCount(price.comparableCount),
-              marker: copy.thisListing,
-              average: copy.average,
-              insufficient: copy.insufficient(price.comparableCount),
-              summary,
-            }}
-          />
-          {price.priceDiffPercent !== null && (
-            <p className={`text-label ${price.priceDiffPercent > 0 ? 'text-text-warning' : 'text-text-positive'}`}>
-              {copy.diff(price.priceDiffPercent)}
-            </p>
-          )}
-          {price.widened && <p className="text-caption text-text-secondary">{copy.widened}</p>}
-        </div>
-        <table className="w-full min-w-0 flex-1 border-collapse text-left">
-          <thead>
-            <tr className="text-caption text-text-tertiary">
-              <th scope="col" className="pb-2 font-normal">
-                {copy.platform}
-              </th>
-              <th scope="col" className="pb-2 text-right font-normal">
-                {copy.median}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {price.byMarketplace.map((row) => (
-              <tr key={row.marketplace} className="border-t border-border-default">
-                <th scope="row" className="py-3 text-left font-normal">
-                  <span className="block text-label">{marketplaceNames[row.marketplace]}</span>
-                  <span className="block text-caption text-text-tertiary">{copy.listingsCount(row.count)}</span>
+      {/* Side by side only when the card itself has room; stacked otherwise. */}
+      <div className="@container rounded-xl border border-border-default p-6">
+        <div className="flex flex-col gap-8 @[36rem]:flex-row">
+          <div className="flex min-w-0 flex-1 flex-col gap-3">
+            <PriceRangeBar
+              dots={price.dots}
+              market={price.market}
+              priceCents={listing.priceCents}
+              fairBand={fairBand}
+              labels={{
+                title: copy.range,
+                count: copy.comparableCount(price.comparableCount),
+                marker: copy.thisListing,
+                average: copy.average,
+                insufficient: copy.insufficient(price.comparableCount),
+                summary,
+              }}
+            />
+            {price.priceDiffPercent !== null && (
+              <p className={`text-label ${price.priceDiffPercent > 0 ? 'text-text-warning' : 'text-text-positive'}`}>
+                {copy.diff(price.priceDiffPercent)}
+              </p>
+            )}
+            {price.widened && <p className="text-caption text-text-secondary">{copy.widened}</p>}
+          </div>
+          <table className="w-full border-collapse text-left @[36rem]:w-60 @[36rem]:shrink-0">
+            <thead>
+              <tr className="text-caption text-text-tertiary">
+                <th scope="col" className="pb-2 font-normal">
+                  {copy.platform}
                 </th>
-                <td className={`py-3 text-right text-label whitespace-nowrap ${row.medianCents === null ? 'text-text-secondary' : ''}`}>
-                  {row.medianCents === null ? copy.noData : formatPrice(row.medianCents)}
-                </td>
+                <th scope="col" className="pb-2 text-right font-normal">
+                  {copy.median}
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {price.byMarketplace.map((row) => (
+                <tr key={row.marketplace} className="border-t border-border-default">
+                  <th scope="row" className="py-3 text-left font-normal">
+                    <span className="block text-label">{marketplaceNames[row.marketplace]}</span>
+                    <span className="block text-caption text-text-tertiary">{copy.listingsCount(row.count)}</span>
+                  </th>
+                  <td
+                    className={`py-3 pl-3 text-right whitespace-nowrap ${row.medianCents === null ? 'text-caption text-text-secondary' : 'text-label'}`}
+                  >
+                    {row.medianCents === null ? copy.noData : formatPrice(row.medianCents)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
       <div className="flex flex-col gap-2">
         <div className="flex min-h-11 items-center justify-between gap-4 pt-2">

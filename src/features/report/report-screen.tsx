@@ -47,7 +47,7 @@ const tabs = [
 function SectionTabs() {
   const [active, setActive] = useState<string>(tabs[0].id)
   return (
-    <nav aria-label={copy.tabs.label} className="-mx-4 overflow-x-auto border-b border-border-default px-4 md:mx-0 md:px-0">
+    <nav aria-label={copy.tabs.label} className="-mx-4 overflow-x-auto overflow-y-hidden border-b border-border-default px-4 [scrollbar-width:none] md:mx-0 md:px-0">
       <ul className="flex gap-6">
         {tabs.map((tab) => (
           <li key={tab.id}>
