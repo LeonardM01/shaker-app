@@ -84,6 +84,10 @@
   --text-label--line-height: 20px;
   --text-label--letter-spacing: -0.005em;
   --text-label--font-weight: 600;
+  --text-price: 24px;
+  --text-price--line-height: 28px;
+  --text-price--letter-spacing: -0.015em;
+  --text-price--font-weight: 800;
   --text-label-small: 12px;
   --text-label-small--line-height: 16px;
   --text-label-small--font-weight: 500;

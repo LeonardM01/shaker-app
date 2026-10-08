@@ -81,7 +81,7 @@ Open question before approving item 4. On the price-change delta pill, `bg/warni
 
 ## Logged-out states and auth (2026-10-08)
 
-User request: logged-out visitors can run unlimited checks; three areas tease then lock, leading to sign-up: the home watchlist, the report's suggested offer + message rail, and "Najsličniji oglasi" beyond the first row. Lock style (user-chosen): tease, then lock. Show the saving ("Možeš uštedjeti oko 50 €"), blur a placeholder ("000 €", generic message), never the real offer; an elevated sign-up card sits over ghost/blurred content. Nothing locked may leak elsewhere on the page (summary text and verdict detail must not name the offer). Sign-in methods (user-chosen): Google + email one-time code, no password. Auth page: one form column (heading, Google, "ili", e-mail input, Nastavi, legal links, sign-in/sign-up toggle) beside a sand context panel showing the listing the visitor came from and the three things the account unlocks; after auth the visitor returns to that report. Frames: Desktop · Početna · gost, Desktop · Izvještaj oglasa · gost, Desktop · Registracija, Desktop · Prijava, Desktop · Prijava · kod, Mobile · Početna · gost, Mobile · Izvještaj oglasa · gost, Mobile · Registracija. Dev note: locked values must not be sent to the client; the blur is over placeholder content.
+User request: logged-out visitors can run unlimited checks; three areas tease then lock, leading to sign-up: the home watchlist, the report's suggested offer + message rail, and "Najsličniji oglasi" beyond the first row. Lock style (user-chosen): tease, then lock. Show the saving ("Možeš uštedjeti oko 50 €"), blur a placeholder ("000 €", generic message), never the real offer; an elevated sign-up card sits over ghost/blurred content. Nothing locked may leak elsewhere on the page (summary text and verdict detail must not name the offer). Sign-in methods (user-chosen): Google + email one-time code, no password. **Superseded 2026-10-08, see "Auth: e-mail and password" below.** Auth page: one form column (heading, Google, "ili", e-mail input, Nastavi, legal links, sign-in/sign-up toggle) beside a sand context panel showing the listing the visitor came from and the three things the account unlocks; after auth the visitor returns to that report. Frames: Desktop · Početna · gost, Desktop · Izvještaj oglasa · gost, Desktop · Registracija, Desktop · Prijava, Desktop · Prijava · kod, Mobile · Početna · gost, Mobile · Izvještaj oglasa · gost, Mobile · Registracija. Dev note: locked values must not be sent to the client; the blur is over placeholder content.
 
 ### Logged-out and auth (documentation)
 
@@ -148,3 +148,14 @@ Pass: documenter, 2026-10-08. Ordinary extension of the incumbent Shaker system:
   - "Logo & host mocks" is a non-canonical section;
   - Beige vs `bg/sand` naming is ambiguous;
   - Layout has no web-app shell or mobile guidance. The auth split layout (400 + 600) adds another unrecorded web layout to that gap.
+
+## Auth: e-mail and password (2026-10-08)
+
+User request: replace the e-mail one-time code with e-mail + password; registration gets a username field. Google stays. This supersedes "Google + email one-time code, no password" above and the OTP step (candidate 7).
+
+- **Registracija** (74:1979 desktop, 74:2263 mobile): heading, subtitle, Secondary "Nastavi s Googleom", "ili", then a `Fields` stack (16px gap) of three DS Inputs: "Korisničko ime" (Icon/user, placeholder "npr. ivana_zg", helper "Prikazuje se uz tvoje recenzije."), "E-mail adresa" (Icon/mail, no helper), "Lozinka" (Icon/lock, placeholder "Najmanje 8 znakova", trailing Icon/eye show/hide). Primary "Napravi račun". Legal line, "Već imaš račun? Prijavi se".
+- **Prijava** (74:2078 desktop, 75:2371 mobile): subtitle "Upiši e-mail i lozinku ili nastavi s Googleom.", Inputs "E-mail adresa" and "Lozinka" (placeholder "Upiši lozinku", trailing eye), a right-aligned "Zaboravljena lozinka?" link in the link style, Primary "Prijavi se".
+- The Primary now names its action ("Napravi račun", "Prijavi se") instead of "Nastavi".
+- Sign-in is by e-mail, not username. The minimum password length shown (8) matches the Better Auth default.
+- **DS changes applied:** new `Icon/eye` (Lucide, 2px stroke, `cell eye` in the icon grid); the Input component set gained `Show trailing icon` (boolean, default off) and `Trailing icon` (instance swap, default Icon/eye) on all four states. Existing instances are unchanged.
+- **Open:** "Desktop · Prijava · kod" (74:2171) and "Mobile · Prijava · kod" (75:2418) are left in place. They are obsolete for sign-in; they could be deleted or repurposed for e-mail verification or a password reset. The "Zaboravljena lozinka?" flow has no screens yet.
