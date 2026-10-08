@@ -1,1 +1,21 @@
 logo-variations
+.neon
+.env.local
+
+# app
+node_modules
+.DS_Store
+dist
+dist-ssr
+*.local
+.env
+.nitro
+.tanstack
+.wrangler
+.output
+.vinxi
+.vercel
+__unconfig*
+
+# prisma
+src/generated

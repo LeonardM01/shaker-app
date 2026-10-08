@@ -1,0 +1,12 @@
+// Prisma manages the `public` schema only. Neon Auth owns `neon_auth`
+// (users, sessions); reference users by `neon_auth.user.id` stored as a
+// string column, and never migrate that schema from here.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
