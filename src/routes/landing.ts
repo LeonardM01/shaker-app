@@ -1,11 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { redirectToLanding } from '#/features/landing/landing-page'
+import { loadLandingPageFromServer, redirectOldLandingUrl } from '#/features/landing/landing-page'
 
 export const Route = createFileRoute('/landing')({
+  beforeLoad: loadLandingPageFromServer,
   server: {
     handlers: {
-      GET: ({ request }) => redirectToLanding(request),
+      GET: ({ request }) => redirectOldLandingUrl(request),
     },
   },
 })

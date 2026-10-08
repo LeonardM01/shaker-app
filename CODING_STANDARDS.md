@@ -52,7 +52,7 @@ Lint and format configuration (ESLint flat config, Prettier, tsconfig strictness
   - returns plain serialisable data, never DB rows with columns the client shouldn't see,
   - uses `method: 'POST'` for anything that writes.
 - Use `createServerOnlyFn` (or `.server.ts` modules) for code that must never be bundled for the client, such as DB clients and secret-bearing helpers.
-- Use server routes (`server.handlers` on a file route) only for things that need a real HTTP endpoint: webhooks (Neon Auth events, payments), the extension's API, health checks.
+- Use server routes (`server.handlers` on a file route) only for things that need a real HTTP endpoint: webhooks (Neon Auth events, payments), the extension's API, health checks, and the static landing page at `/` (see `docs/adr/0012-landing-page-at-root.md`).
 - **Search params are state.** Validate them with `validateSearch` and a Zod schema; read them with `Route.useSearch()`.
 - Use `<Link>` and `useNavigate` with typed `to` and `params`, never string-built URLs.
 - Every route that loads data defines `pendingComponent`, `errorComponent` and, where relevant, `notFoundComponent`. Throw `notFound()` / `redirect()` from loaders and server functions; don't return error flags.

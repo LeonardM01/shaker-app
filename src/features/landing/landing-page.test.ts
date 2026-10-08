@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
 
-import { landingPage, redirectToLanding } from './landing-page'
+import { redirectOldLandingUrl, serveLandingPage } from './landing-page'
 
-describe('landingPage', () => {
+describe('serveLandingPage', () => {
   it('serves the landing page as HTML', async () => {
-    const response = landingPage()
+    const response = serveLandingPage()
 
     expect(response.status).toBe(200)
     expect(response.headers.get('content-type')).toBe('text/html; charset=utf-8')
@@ -13,16 +13,27 @@ describe('landingPage', () => {
     expect(html).toContain('Dodaj u Chrome')
   })
 
+  it('lets the CDN cache the page, as it did when it was a static file', () => {
+    expect(serveLandingPage().headers.get('cache-control')).toContain('s-maxage=')
+  })
+
   it('links its icon from the site root, since the page now lives at /', async () => {
-    const html = await landingPage().text()
+    const html = await serveLandingPage().text()
 
     expect(html).toContain('<link rel="icon" href="/landing/icon.svg"')
   })
+
+  it('sends visitors to the app on the same origin, not a fixed deployment', async () => {
+    const html = await serveLandingPage().text()
+
+    expect(html).toContain('href="/app"')
+    expect(html).not.toContain('vercel.app')
+  })
 })
 
-describe('redirectToLanding', () => {
+describe('redirectOldLandingUrl', () => {
   it('permanently redirects the old /landing address to /', () => {
-    const response = redirectToLanding(new Request('https://shaker.test/landing/'))
+    const response = redirectOldLandingUrl(new Request('https://shaker.test/landing/'))
 
     expect(response.status).toBe(301)
     expect(response.headers.get('location')).toBe('https://shaker.test/')

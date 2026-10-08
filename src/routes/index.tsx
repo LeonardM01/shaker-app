@@ -1,11 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { landingPage } from '#/features/landing/landing-page'
+import { loadLandingPageFromServer, serveLandingPage } from '#/features/landing/landing-page'
 
 export const Route = createFileRoute('/')({
+  beforeLoad: loadLandingPageFromServer,
   server: {
     handlers: {
-      GET: () => landingPage(),
+      GET: serveLandingPage,
     },
   },
 })
