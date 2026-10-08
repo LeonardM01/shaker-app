@@ -206,6 +206,18 @@ describe('POST /reviews', () => {
     ])
   })
 
+  it('refuses a review of a listing that was never checked, such as a comparable', async () => {
+    const w = world()
+    const seller = w.store.addSeller({ marketplace: 'njuskalo', externalId: 'ivana' })
+    const comparable = w.store.addListing({ marketplace: 'njuskalo', title: 'Usporedivi', sellerId: seller.id })
+
+    const response = await postReview(w.deps, review(comparable.id, INSTALL_A))
+
+    expect(response.status).toBe(404)
+    expect(await response.json()).toEqual({ error: 'not_found' })
+    expect(w.store.reviews).toEqual([])
+  })
+
   it('answers 404 when the listing has no known seller', async () => {
     const w = world()
     const orphan = w.store.addListing({ marketplace: 'njuskalo', title: 'Bez prodavača' })

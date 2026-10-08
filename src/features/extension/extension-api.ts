@@ -148,6 +148,8 @@ export async function postReview(
     const listing = await store.getListing(input.listingId)
     const seller = listing?.sellerId ? await store.getSeller(listing.sellerId) : null
     if (!listing || !seller) return fail('no_seller', 404)
+    // Only a listing someone checked: never a comparable seen on a search page.
+    if (!(await store.getLatestCheck(listing.id))) return fail('not_found', 404)
     const created = await store.createReview({
       userId: deps.anonymousUserId,
       installId: input.installId,

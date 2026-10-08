@@ -8,7 +8,7 @@ export const Route = createFileRoute('/api/extension/v1/checks/$checkId')({
   server: {
     handlers: {
       OPTIONS: () => preflight(),
-      GET: ({ params }) => handle('check setup', {}, () => getCheck(extensionApiDeps(), params.checkId)),
+      GET: ({ params }) => handle('check progress setup', { checkId: params.checkId }, () => getCheck(extensionApiDeps(), params.checkId)),
     },
   },
 })
