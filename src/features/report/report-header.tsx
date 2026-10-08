@@ -6,6 +6,8 @@ import { Tag } from '#/components/ui/tag'
 import { VerdictBadgeFull } from '#/components/ui/verdict-badge-full'
 import { marketplaceTags, reportCopy } from '#/features/report/copy'
 import type { Report } from '#/features/report/report-result'
+import { TrustBadge } from '#/features/report/trust-badge'
+import { trustStatus } from '#/features/report/trust-status'
 import { formatPrice, formatTimeAgo } from '#/lib/format'
 
 const copy = reportCopy
@@ -66,7 +68,7 @@ function TrackControl({
   )
 }
 
-/** Photo, title, where and when, the price with its verdict, and refresh / Prati. */
+/** Photo, trust badge, title, where and when, the price with its verdict, and refresh / Prati. */
 export function ReportHeader({
   report,
   onRefresh,
@@ -84,6 +86,7 @@ export function ReportHeader({
         {cover && <img src={cover} alt={copy.header.photoAlt(listing.title)} className="size-full object-cover" />}
       </div>
       <div className="flex min-w-0 flex-1 flex-col gap-3">
+        <TrustBadge status={trustStatus(report)} />
         <h1 className="font-display text-heading-large">{listing.title}</h1>
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
           <Tag>{marketplaceTags[listing.marketplace]}</Tag>

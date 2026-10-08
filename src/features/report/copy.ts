@@ -6,6 +6,7 @@ import type { QualityLevel } from '#/features/check/scoring/listing-quality'
 import type { OfferScore } from '#/features/check/scoring/offer-score'
 import type { PatternResult, ScamPatternCode } from '#/features/check/scoring/scam'
 import type { SellerFact } from '#/features/marketplaces/marketplace-reader'
+import type { CautionReason } from '#/features/report/trust-status'
 import type { ListingQuality } from '#/features/check/scoring/listing-quality'
 import { formatClock, formatDate, formatPrice, recentDayOffset } from '#/lib/format'
 import type { Marketplace } from '#/lib/listing'
@@ -200,6 +201,35 @@ export const reportCopy = {
     demo: 'Primjer',
     photoAlt: (title: string) => `Fotografija oglasa: ${title}`,
     noPrice: 'Cijena nije navedena',
+    trust: {
+      labels: { checked: 'Provjereno', caution: 'Oprez', suspicious: 'Sumnjivo', unknown: 'Nedovoljno podataka' },
+      suspicious: (signals: number) =>
+        `Pronašli smo ${count(signals, 'znak prijevare', 'znaka prijevare', 'znakova prijevare')}`,
+      caution: (reasons: CautionReason[], signals: number) =>
+        reasons
+          .map((reason) => {
+            switch (reason) {
+              case 'scam_signals':
+                return count(signals, 'mogući znak prijevare', 'moguća znaka prijevare', 'mogućih znakova prijevare')
+              case 'contradictions':
+                return 'Opis i fotografije se ne slažu'
+              case 'low_quality':
+                return 'Slaba kvaliteta oglasa'
+              case 'low_offer_score':
+                return 'Niska ocjena ponude'
+            }
+          })
+          .join(' · '),
+      checked: (qualityValue: number, offerScoreValue: number | null) =>
+        [
+          'Nema znakova prijevare',
+          `kvaliteta oglasa ${String(qualityValue)}/100`,
+          offerScoreValue !== null && `ocjena ponude ${String(offerScoreValue)}/100`,
+        ]
+          .filter(Boolean)
+          .join(' · '),
+      unknown: 'Premalo podataka za procjenu. To nije znak rizika.',
+    },
   },
   verdictReason: {
     haggle: (offerCents: number, savingCents: number) =>

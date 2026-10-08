@@ -62,6 +62,14 @@ describe('ReportScreen: header and verdict', () => {
     expect(screen.getByText('Zadnja provjera danas u 14:32')).toBeInTheDocument()
   })
 
+  it('answers "can I trust it" above the title and links to the evidence', async () => {
+    await renderReport(reportFixture())
+
+    const badge = screen.getByRole('link', { name: /^Oprez/ })
+    expect(badge).toHaveTextContent('Oprez1 mogući znak prijevare · Opis i fotografije se ne slažu')
+    expect(badge).toHaveAttribute('href', '#sigurnost')
+  })
+
   it('shows no data in gray words, never a guessed number', async () => {
     await renderReport(
       reportFixture({
