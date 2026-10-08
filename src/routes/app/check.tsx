@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { z } from 'zod'
 
-import { shellCopy } from '#/components/ui/copy'
+import { pageTitle, shellCopy } from '#/components/ui/copy'
 import { recognizeListingLink } from '#/features/home/link-recognition'
 import { startCheckFn } from '#/features/report/check.functions'
 
@@ -24,7 +24,7 @@ export const Route = createFileRoute('/app/check')({
     }
     throw redirect({ to: '/app/checks/$checkId', params: { checkId: started.checkId } })
   },
-  head: () => ({ meta: [{ title: `${shellCopy.pendingScreens.check} · Vrijedi.Ly` }] }),
+  head: () => ({ meta: [{ title: pageTitle(shellCopy.pendingScreens.check) }] }),
   pendingComponent: () => <div aria-busy className="min-h-dvh" />,
   errorComponent: CheckStartFailed,
 })

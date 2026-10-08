@@ -9,6 +9,7 @@ import type { SellerFact } from '#/features/marketplaces/marketplace-reader'
 import type { ListingQuality } from '#/features/check/scoring/listing-quality'
 import { formatClock, formatDate, formatPrice, recentDayOffset } from '#/lib/format'
 import type { Marketplace } from '#/lib/listing'
+import { brandName, pageTitle } from '#/components/ui/copy'
 
 const plural = new Intl.PluralRules('hr-HR')
 
@@ -57,7 +58,7 @@ const errorTitles: Record<string, string> = {
 }
 
 export const progressCopy = {
-  pageTitle: 'Provjera u tijeku · Vrijedi.Ly',
+  pageTitle: pageTitle('Provjera u tijeku'),
   heading: 'Provjeravam oglas…',
   listLabel: 'Provjere',
   timing: 'Obično traje do pola minute. Svaka provjera se prikaže čim je gotova, ne moraš čekati sve.',
@@ -170,7 +171,7 @@ const scamPatternCopy: Record<ScamPatternCode, { clear: string; unknown: string;
 }
 
 export const reportCopy = {
-  pageTitle: (title: string) => `${title} · Vrijedi.Ly`,
+  pageTitle,
   notFound: 'Za ovaj oglas još nemamo izvještaj.',
   breadcrumb: { home: 'Početna', watchlist: 'Praćeni oglasi', label: 'Putanja' },
   back: 'Natrag',
@@ -224,7 +225,7 @@ export const reportCopy = {
     offerScoreReason: (score: OfferScore) => {
       switch (score.kind) {
         case 'no_data':
-          return 'Još nemamo dovoljno podataka. Prodavač ima manje od 5 recenzija na Vrijedi.Ly.'
+          return `Još nemamo dovoljno podataka. Prodavač ima manje od 5 recenzija na ${brandName}.`
         case 'score':
           if (score.basis === 'reviews_only') return 'Ocjena se temelji samo na recenzijama prodavača.'
           if (score.priceDiffPercent === 0) return 'Cijena je na razini prosjeka. Ocjena uključuje i recenzije prodavača.'
@@ -336,10 +337,10 @@ export const reportCopy = {
       ]
         .filter(Boolean)
         .join(' · '),
-    rating: 'Ocjena na Vrijedi.Ly',
+    rating: `Ocjena na ${brandName}`,
     reviewCount: (value: number) => count(value, 'recenzija', 'recenzije', 'recenzija'),
     noReviews: 'Još nema recenzija',
-    newSeller: 'Prodavač još nema recenzija na Vrijedi.Ly. To nije znak rizika.',
+    newSeller: `Prodavač još nema recenzija na ${brandName}. To nije znak rizika.`,
     /** A published fact as a stat tile or a ✓ line. */
     fact: (fact: SellerFact): { kind: 'tile'; value: string; label: string } | { kind: 'check'; text: string } => {
       switch (fact.kind) {

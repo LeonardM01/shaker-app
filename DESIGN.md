@@ -249,7 +249,7 @@ Muted olive and soft naturals on paper, grounded by a dark olive-forest ink, wit
 - **Avatars** use olive-200 (#D3E3B4) via `bg/brand-muted`, so people never wear a verdict color.
 
 ### Named Rules
-**The One Meaning Rule.** Teal = below market, Icy Blue = within market, Pollen = above market (haggle), Pollen-subtle = check one thing, Red = evidence of risk, Gray = no data. Olive is action only. Never reuse a verdict color for decoration.
+**The One Meaning Rule.** Teal = below market, Icy Blue = within market, Pollen = above market (haggle), Pollen-subtle = check one thing, Red = evidence of risk, Gray = no data. Olive is action only. Never reuse a verdict color for decoration. The one exception is the logo mark: its star is Pollen, as on every star in the product, and it carries no verdict.
 
 **The Evidence Rule.** Red never appears without the evidence written next to it. "No data" is gray, never amber or red: it is unknown, not suspicious.
 
