@@ -3,10 +3,11 @@
 // generic panel heading are still to be confirmed with the designer.
 
 import type { AuthFailure } from '#/features/auth/auth-port'
+import { pageTitle } from '#/components/ui/copy'
 
 export const authCopy = {
   signUp: {
-    pageTitle: 'Registracija · Shaker',
+    pageTitle: pageTitle('Registracija'),
     heading: 'Napravi račun',
     subtitle: 'Za kopiranje ponude, praćenje cijena i sve usporedive oglase.',
     submit: 'Napravi račun',
@@ -14,7 +15,7 @@ export const authCopy = {
     toggleAction: 'Prijavi se',
   },
   signIn: {
-    pageTitle: 'Prijava · Shaker',
+    pageTitle: pageTitle('Prijava'),
     heading: 'Prijavi se',
     subtitle: 'Upiši e-mail i lozinku ili nastavi s Googleom.',
     submit: 'Prijavi se',

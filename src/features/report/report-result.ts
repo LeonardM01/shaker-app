@@ -91,7 +91,7 @@ export type SellerSection = {
 }
 
 export type OfferSection =
-  /** Fewer than 5 comparables: Shaker doesn't make up a number. */
+  /** Fewer than 5 comparables: Vrijedi.Ly doesn't make up a number. */
   | { kind: 'none' }
   /** Guest: the saving, rounded, and nothing else. */
   | { kind: 'locked'; approxSavingCents: number }

@@ -13,9 +13,15 @@ export const verdictLabels: Record<Verdict, string> = {
 /** Names the full verdict badge for screen readers. */
 export const verdictGroupLabel = 'Presuda'
 
+/** The product name. Written here once; everything else reads it. */
+export const brandName = 'Vrijedi.Ly'
+
+/** Browser tab title for a screen: "<screen> · Vrijedi.Ly". */
+export const pageTitle = (screen: string) => `${screen} · ${brandName}`
+
 export const shellCopy = {
   skipLink: 'Preskoči na sadržaj',
-  logo: 'Shaker',
+  logo: brandName,
   nav: 'Glavna navigacija',
   home: 'Početna',
   /** Titles of screens that are only navigation targets for now. */
@@ -26,7 +32,7 @@ export const shellCopy = {
   },
   checkStartFailed: 'Provjeru trenutno ne možemo pokrenuti. Pokušaj ponovo za minutu.',
   extension: {
-    title: 'Shaker u Chromeu',
+    title: `${brandName} u Chromeu`,
     body: 'Ocjena se pojavi uz cijenu dok listaš Njuškalo.',
     action: 'Dodaj besplatno',
   },

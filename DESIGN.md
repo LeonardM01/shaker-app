@@ -1,5 +1,5 @@
 ---
-name: Shaker
+name: Vrijedi.Ly
 description: Trust and price layer for Njuškalo, Facebook Marketplace, Index oglasi and Vinted
 colors:
   muted-olive: "#A6C36F"
@@ -212,7 +212,7 @@ components:
     padding: "2px 8px"
 ---
 
-# Design System: Shaker
+# Design System: Vrijedi.Ly
 
 Figma source of truth: https://www.figma.com/design/yYrUqxBmK1rH5djf9hvIF4/SHAKER (page "Design System"). Variables there are named `color/bg/*`, `color/text/*`, `color/border/*`, `color/icon/*`, `spacing/*` and `radius/*`, and each carries its CSS code syntax (`var(--color-bg-brand)` and so on).
 
@@ -220,7 +220,7 @@ Figma source of truth: https://www.figma.com/design/yYrUqxBmK1rH5djf9hvIF4/SHAKE
 
 **Creative North Star: "The Street-Smart Friend"**
 
-Shaker is the friend who comes along when you buy something second-hand: calm, on your side, a little cheeky about the price. The system borrows Wise's product discipline (generous white space, flat tinted surfaces, pill actions, big confident numbers, dark ink on bright green) and swaps in a muted olive brand over a dark olive-forest ink (the same pairing as Wise's bright green on forest green), with teal and icy blue carrying the price verdicts, a warm beige for community, and gold for savings. Bricolage Grotesque gives the voice; Inter does the work.
+Vrijedi.Ly is the friend who comes along when you buy something second-hand: calm, on your side, a little cheeky about the price. The system borrows Wise's product discipline (generous white space, flat tinted surfaces, pill actions, big confident numbers, dark ink on bright green) and swaps in a muted olive brand over a dark olive-forest ink (the same pairing as Wise's bright green on forest green), with teal and icy blue carrying the price verdicts, a warm beige for community, and gold for savings. Bricolage Grotesque gives the voice; Inter does the work.
 
 The extension is a guest on someone else's page. It stays compact, floats with a soft shadow and a hairline border, and never restyles the host.
 
@@ -236,7 +236,7 @@ The extension is a guest on someone else's page. It stays compact, floats with a
 Muted olive and soft naturals on paper, grounded by a dark olive-forest ink, with gold kept for opportunity.
 
 ### Brand (user-pinned, v2)
-- **Muted Olive** (#A6C36F): brand, logo, primary actions, focus. Text on it is always ink (7.8:1); white text fails contrast. Never used as a verdict.
+- **Muted Olive** (#A6C36F): brand, primary actions, focus. Text on it is always ink (7.8:1); white text fails contrast. Never used as a verdict.
 - **Muted Teal** (#86BAA1): the "great price" verdict and success states. Green still means "good deal".
 - **Icy Blue** (#B0DAF1): the "fair price" verdict and informational states. Calm and neutral.
 - **Beige** (#EDEAD0): the warm community surface for seller replies and the haggle helper.
@@ -249,7 +249,7 @@ Muted olive and soft naturals on paper, grounded by a dark olive-forest ink, wit
 - **Avatars** use olive-200 (#D3E3B4) via `bg/brand-muted`, so people never wear a verdict color.
 
 ### Named Rules
-**The One Meaning Rule.** Teal = below market, Icy Blue = within market, Pollen = above market (haggle), Pollen-subtle = check one thing, Red = evidence of risk, Gray = no data. Olive is action only. Never reuse a verdict color for decoration.
+**The One Meaning Rule.** Teal = below market, Icy Blue = within market, Pollen = above market (haggle), Pollen-subtle = check one thing, Red = evidence of risk, Gray = no data. Olive is action only. Never reuse a verdict color for decoration. The one exception is the logo mark: its star is Pollen, as on every star in the product, and it carries no verdict.
 
 **The Evidence Rule.** Red never appears without the evidence written next to it. "No data" is gray, never amber or red: it is unknown, not suspicious.
 
@@ -298,10 +298,10 @@ Pills (`full`) for actions, chips, compact verdicts and avatars. 12px for inputs
 
 - **Button**: pill. Primary (Muted Olive + ink), Secondary (neutral fill), Tertiary (text), Danger (irreversible actions only). Large 48px for the web app, Medium 36px for the extension. Focus is a 2px `border/focus` ring with a 2px offset (`Focused` boolean in Figma, `:focus-visible` in code). One Primary per view. Secondary is neutral-filled, so never place it on a `bg/neutral` surface; use Primary there.
 - **Verdict Badge** (the Full size's icon circle uses `bg/icon-tint`: white at 40% in Light, 14% in Dark): Great / Fair / Haggle / Check / Risk / Unknown × Compact (next to the price on host pages) / Full (panel). Always icon + label; Full adds a one-line reason.
-- **Listing Chip**: the white pill the extension injects next to a listing's price: Shaker mark + compact verdict + seller rating + chevron. 32px tall, Overlay shadow, hairline border. Verdicts include `Loading` ("Provjeravam…"). Has a `Focused` ring; Esc in the panel returns focus to the chip.
+- **Listing Chip**: the white pill the extension injects next to a listing's price: Vrijedi.Ly mark + compact verdict + seller rating + chevron. 32px tall, Overlay shadow, hairline border. Verdicts include `Loading` ("Provjeravam…"). Has a `Focused` ring; Esc in the panel returns focus to the chip.
   - **Size=Full** where there's ≥ 320px beside the price (listing detail pages). **Size=Compact** (62×34: mark + verdict dot) in result grids and lists.
   - Hover or focus on Compact opens Full as a popover *above* the chip, over the photo, never over text. Click opens the panel.
-  - aria-label: "Shaker: <presuda>, prodavač <ocjena>".
+  - aria-label: "Vrijedi.Ly: <presuda>, prodavač <ocjena>".
 - **Price Range Bar** (signature): comparable listings as dots over three verdict-colored zones (teal / icy blue / pollen), with a black marker for this listing. With fewer than 5 comparables, use `Position=Insufficient`: gray track, real dots only, no marker or zones, and the copy "Premalo podataka za raspon (3 od potrebnih 5)". Never draw a fake range.
 - **Haggle helper**: beige card with the suggested offer in Price XL, the saving in positive text, a pre-written message and a "Kopiraj poruku" button.
 - **Alert**: Info / Success / Warning / Danger for message checks. The title says what happened, the body says what to do, and an optional action follows. The action's hit area is at least 24px tall (WCAG 2.5.8).
@@ -320,8 +320,8 @@ Pills (`full`) for actions, chips, compact verdicts and avatars. 12px for inputs
 
 ## Logo & host mocks
 
-- The logo (wordmark and "s" mark) is outlined vector artwork in the `Logo` component. The Listing Chip uses a Logo Mark instance at 75%. Never retype the logo as live text.
-- Host-page mocks (layers prefixed `Host/`) deliberately use fixed host colors, not Shaker tokens. Facebook light: `#F0F2F5` / `#FFFFFF` / `#050505` / `#65676B`. Facebook dark: `#18191A` / `#242526` / `#E4E6EB` / `#B0B3B8`. Shaker's chip and panel must prove they hold up on a foreign surface.
+- The logo is the Vrijedi.Ly mark (an ink magnifier with a Golden Pollen star in the lens, on a white rounded tile with a hairline border) plus the "Vrijedi.Ly" wordmark in Bricolage Grotesque ExtraBold. It is outlined vector artwork in the `Logo` component (`src/assets/logo.svg`); the mark alone is the favicon (`public/landing/icon.svg`). The Listing Chip uses a Logo Mark instance at 75%. Never retype the logo as live text.
+- Host-page mocks (layers prefixed `Host/`) deliberately use fixed host colors, not Vrijedi.Ly tokens. Facebook light: `#F0F2F5` / `#FFFFFF` / `#050505` / `#65676B`. Facebook dark: `#18191A` / `#242526` / `#E4E6EB` / `#B0B3B8`. Vrijedi.Ly's chip and panel must prove they hold up on a foreign surface.
 
 ## Do's and Don'ts
 

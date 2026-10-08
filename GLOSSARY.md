@@ -12,9 +12,9 @@ Domain terms used in code, issues and docs. Croatian UI words are in parentheses
 
 **Comparable observation.** A listing we only saw on a marketplace search results page: title, price, city, URL, seen-at. No photos, no extraction beyond product attributes.
 
-**Seller** (prodavač). One marketplace account, identified by marketplace + the marketplace's seller ID. Two accounts of the same person are two sellers unless the person claims both. Avoid: user (that's a Shaker account).
+**Seller** (prodavač). One marketplace account, identified by marketplace + the marketplace's seller ID. Two accounts of the same person are two sellers unless the person claims both. Avoid: user (that's a Vrijedi.Ly account).
 
-**Claim** (preuzimanje oglasa). A signed-in Shaker user saying "this listing, and so its seller account, is mine". Unlocks replying to reviews and linking the user's accounts on other marketplaces.
+**Claim** (preuzimanje oglasa). A signed-in Vrijedi.Ly user saying "this listing, and so its seller account, is mine". Unlocks replying to reviews and linking the user's accounts on other marketplaces.
 
 **Scam pattern** (obrazac prijevare). One entry of the fixed catalogue in ADR 0010, with a strength (strong, medium, weak). A pattern that fires carries its evidence. Avoid: red flag, fraud score.
 
@@ -24,7 +24,7 @@ Domain terms used in code, issues and docs. Croatian UI words are in parentheses
 
 **Search key.** A short normalized name of the item for sale (e.g. `iPhone 13 Pro 128 GB`), produced when a listing is checked. Used both as the marketplace search query and as the tokens a comparable's title must contain.
 
-**Ocjena ponude** (offer score). 0–100 score of how good a deal the listing is: price fairness against comparables, combined with the seller's reviews on Shaker. Needs at least 5 reviews; shown as a score only, without the comparable count. Not the same as the verdict.
+**Ocjena ponude** (offer score). 0–100 score of how good a deal the listing is: price fairness against comparables, combined with the seller's reviews on Vrijedi.Ly. Needs at least 5 reviews; shown as a score only, without the comparable count. Not the same as the verdict.
 
 **Verdict** (presuda: Odlična cijena, Fer cijena, Prostor za pregovor, Rizik, Nema podataka). The badge next to the price. Based on price against comparables only.
 

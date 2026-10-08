@@ -17,6 +17,7 @@ import {
   setTrackedFn,
   writeReviewFn,
 } from '#/features/report/report.functions'
+import { brandName } from '#/components/ui/copy'
 
 export const Route = createFileRoute('/app/listing/$listingId')({
   loader: async ({ context, params }) => {
@@ -25,7 +26,7 @@ export const Route = createFileRoute('/app/listing/$listingId')({
     return { title: report.listing.title }
   },
   head: ({ loaderData }) => ({
-    meta: [{ title: loaderData ? reportCopy.pageTitle(loaderData.title) : 'Shaker' }],
+    meta: [{ title: loaderData ? reportCopy.pageTitle(loaderData.title) : brandName }],
   }),
   pendingComponent: () => <div aria-busy className="min-h-dvh" />,
   errorComponent: ReportMissing,

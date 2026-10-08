@@ -33,9 +33,9 @@ describe('serveLandingPage', () => {
 
 describe('redirectOldLandingUrl', () => {
   it('permanently redirects the old /landing address to /', () => {
-    const response = redirectOldLandingUrl(new Request('https://shaker.test/landing/'))
+    const response = redirectOldLandingUrl(new Request('https://vrijedi.test/landing/'))
 
     expect(response.status).toBe(301)
-    expect(response.headers.get('location')).toBe('https://shaker.test/')
+    expect(response.headers.get('location')).toBe('https://vrijedi.test/')
   })
 })

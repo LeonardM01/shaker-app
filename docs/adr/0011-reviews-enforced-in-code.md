@@ -5,7 +5,7 @@
 
 ## Context
 
-Shaker reviews feed Ocjena ponude (≥5 needed, ADR 0005), so they invite self-reviews and review bombing. The design says "41 od 48 recenzija napisali su kupci s potvrđenom kupnjom", but nothing confirms a purchase yet. For the MVP every rule must be enforceable by code, with no manual moderation.
+Vrijedi.Ly reviews feed Ocjena ponude (≥5 needed, ADR 0005), so they invite self-reviews and review bombing. The design says "41 od 48 recenzija napisali su kupci s potvrđenom kupnjom", but nothing confirms a purchase yet. For the MVP every rule must be enforceable by code, with no manual moderation.
 
 ## Decision
 
