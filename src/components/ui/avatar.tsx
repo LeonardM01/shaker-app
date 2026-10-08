@@ -1,12 +1,14 @@
-/** DESIGN.md Avatar, size S: initials on light olive, never a verdict color. */
-export function Avatar({ initials, label }: { initials: string; label: string }) {
+/**
+ * DESIGN.md Avatar, size S: initials on light olive, never a verdict color.
+ * Decorative: the control around it carries the accessible name.
+ */
+export function Avatar({ initials }: { initials: string }) {
   return (
     <span
-      role="img"
-      aria-label={label}
+      aria-hidden
       className="inline-flex size-8 items-center justify-center rounded-full bg-bg-brand-muted text-label-small text-text-primary"
     >
-      <span aria-hidden>{initials}</span>
+      {initials}
     </span>
   )
 }

@@ -1,3 +1,5 @@
+import type { SignInInput, SignUpInput } from '#/features/auth/form-rules'
+
 export type AuthFailure = 'email_taken' | 'invalid_credentials' | 'rate_limited' | 'unavailable'
 
 export type AuthOutcome = { ok: true } | { ok: false; reason: AuthFailure }
@@ -7,8 +9,11 @@ export type AuthOutcome = { ok: true } | { ok: false; reason: AuthFailure }
  * Better Auth directly; better-auth-port.ts is the production adapter.
  */
 export type AuthPort = {
-  signUp: (input: { username: string; email: string; password: string }) => Promise<AuthOutcome>
-  signIn: (input: { email: string; password: string }) => Promise<AuthOutcome>
-  /** Starts the Google redirect. Resolves only if starting it failed. */
+  signUp: (input: SignUpInput) => Promise<AuthOutcome>
+  signIn: (input: SignInInput) => Promise<AuthOutcome>
+  /**
+   * Starts the Google redirect. Only a failure to start matters to the
+   * caller; on success the browser is already leaving the page.
+   */
   signInWithGoogle: (input: { callbackURL: string; errorCallbackURL: string }) => Promise<AuthOutcome>
 }

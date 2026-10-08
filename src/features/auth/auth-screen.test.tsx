@@ -9,15 +9,13 @@ import {
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
+import type { Mock } from 'vitest'
 
 import type { AuthContext } from '#/features/auth/auth-context'
 import type { AuthOutcome, AuthPort } from '#/features/auth/auth-port'
 import { AuthScreen } from '#/features/auth/auth-screen'
 import type { AuthMode } from '#/features/auth/auth-form'
 import type { AuthSearch } from '#/features/auth/auth-search'
-
-/** Intl puts a no-break space before "€"; accessible names keep it. */
-const nbsp = (text: string) => text.replaceAll(' €', ' €')
 
 const LISTING_ID = '6f1c2a4e-8b1d-4c3a-9e7f-2d5b8a1c0e93'
 const REPORT = '/app/check?url=https%3A%2F%2Fwww.njuskalo.hr%2Fx-oglas-1'
@@ -35,7 +33,9 @@ const iphone: AuthContext = {
 
 const ok: AuthOutcome = { ok: true }
 
-function fakePort(overrides: Partial<AuthPort> = {}) {
+type FakePort = { [Method in keyof AuthPort]: Mock<AuthPort[Method]> }
+
+function fakePort(overrides: Partial<FakePort> = {}): FakePort {
   return {
     signUp: vi.fn<AuthPort['signUp']>(() => Promise.resolve(ok)),
     signIn: vi.fn<AuthPort['signIn']>(() => Promise.resolve(ok)),
@@ -53,7 +53,7 @@ async function renderAuth({
   mode?: AuthMode
   context?: AuthContext
   search?: AuthSearch
-  auth?: ReturnType<typeof fakePort>
+  auth?: FakePort
 } = {}) {
   const onSignedIn = vi.fn(() => Promise.resolve())
   const screenFor = (screenMode: AuthMode) => () => (
@@ -161,6 +161,7 @@ describe('Registracija: the form', () => {
     ['too long', 'a'.repeat(31), 'Korisničko ime može imati najviše 30 znakova.'],
     ['with a space', 'ivana zg', 'Koristi samo slova, brojeve, _ i točku.'],
     ['with a symbol', 'ivana@zg', 'Koristi samo slova, brojeve, _ i točku.'],
+    ['with a non-digit number sign', 'ivana²', 'Koristi samo slova, brojeve, _ i točku.'],
   ])('rejects a username that is %s', async (_, name, message) => {
     const { auth, user } = await renderAuth()
 
@@ -232,6 +233,7 @@ describe('Registracija: the form', () => {
     expect(await screen.findByText('Račun s ovim e-mailom već postoji.')).toBeInTheDocument()
     expect(email()).toHaveAccessibleDescription(/Račun s ovim e-mailom već postoji\./)
     expect(email()).toHaveAttribute('aria-invalid', 'true')
+    expect(email()).toHaveFocus()
     const links = screen.getAllByRole('link', { name: 'Prijavi se' })
     const hrefs = links.map((link) => new URL(link.getAttribute('href') ?? '', 'http://x'))
     expect(hrefs).toHaveLength(2)
@@ -371,9 +373,9 @@ describe('Google', () => {
 
       await user.click(screen.getByRole('button', { name: 'Nastavi s Googleom' }))
 
-      const [[input]] = auth.signInWithGoogle.mock.calls as [[Parameters<AuthPort['signInWithGoogle']>[0]]]
-      expect(input.callbackURL).toBe(`${window.location.origin}${REPORT}`)
-      const errorCallback = new URL(input.errorCallbackURL)
+      const [input] = auth.signInWithGoogle.mock.lastCall ?? []
+      expect(input?.callbackURL).toBe(`${window.location.origin}${REPORT}`)
+      const errorCallback = new URL(input?.errorCallbackURL ?? '')
       expect(errorCallback.origin).toBe(window.location.origin)
       expect(errorCallback.pathname).toBe(`/${mode}`)
       expect(errorCallback.searchParams.get('redirect')).toBe(REPORT)
@@ -422,7 +424,7 @@ describe('Context panel', () => {
     const panel = within(screen.getByRole('complementary', { name: 'Tvoj izvještaj te čeka' }))
     expect(panel.getByText('Nakon prijave vraćamo te točno ovdje.')).toBeInTheDocument()
     expect(panel.getByText('iPhone 13 Pro, 128 GB, zeleni')).toBeInTheDocument()
-    expect(panel.getByText(nbsp('640 €'))).toBeInTheDocument()
+    expect(panel.getByText('640 €')).toBeInTheDocument()
     expect(panel.getByText('Prostor za pregovor')).toBeInTheDocument()
     expect(panel.getByText('Predložena ponuda')).toBeInTheDocument()
     expect(panel.getByText('Kopiraj predloženu ponudu')).toBeInTheDocument()
@@ -435,7 +437,7 @@ describe('Context panel', () => {
   it('keeps the offer placeholder away from assistive tech', async () => {
     await renderAuth({ context: iphone })
 
-    const placeholder = screen.getByText(nbsp('000 €'))
+    const placeholder = screen.getByText('000 €')
     expect(placeholder.closest('[aria-hidden="true"]')).not.toBeNull()
   })
 

@@ -1,6 +1,7 @@
 import { Link, useNavigate, useRouter } from '@tanstack/react-router'
 import { CircleAlert, LoaderCircle, Mail, User } from 'lucide-react'
 import { useRef, useState } from 'react'
+import { flushSync } from 'react-dom'
 import type { SubmitEvent } from 'react'
 
 import googleMarkUrl from '#/assets/google-g.svg'
@@ -70,7 +71,12 @@ export function AuthForm({ mode, auth, search, onSignedIn }: AuthFormProps) {
     setStatus('idle')
     switch (outcome.reason) {
       case 'email_taken':
-        setEmailTaken(true)
+        // Render the message first, so moving focus reads it out as the
+        // field's description.
+        flushSync(() => {
+          setEmailTaken(true)
+        })
+        inputs.current.email?.focus()
         return
       case 'invalid_credentials':
         setValues((current) => ({ ...current, password: '' }))
@@ -213,17 +219,8 @@ export function AuthForm({ mode, auth, search, onSignedIn }: AuthFormProps) {
         </div>
 
         {alert && (
-          <p
-            role="alert"
-            className={`flex gap-2 rounded-md p-3 text-body-small text-text-primary ${
-              alert === 'invalid_credentials' ? 'bg-bg-danger-subtle' : 'bg-bg-warning-subtle'
-            }`}
-          >
-            <CircleAlert
-              aria-hidden
-              size={20}
-              className={`shrink-0 ${alert === 'invalid_credentials' ? 'text-icon-danger' : 'text-icon-warning'}`}
-            />
+          <p role="alert" className="flex gap-2 rounded-md bg-bg-neutral p-3 text-body-small text-text-primary">
+            <CircleAlert aria-hidden size={20} className="shrink-0 text-icon-secondary" />
             {authCopy.alerts[alert]}
           </p>
         )}

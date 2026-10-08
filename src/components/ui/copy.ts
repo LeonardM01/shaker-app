@@ -18,8 +18,8 @@ export const shellCopy = {
   /** Titles of screens that are only navigation targets for now. */
   pendingScreens: {
     check: 'Provjera u tijeku',
-    signIn: 'Prijava',
-    signUp: 'Registracija',
+    terms: 'Uvjeti korištenja',
+    privacy: 'Pravila privatnosti',
   },
   extension: {
     title: 'Shaker u Chromeu',
