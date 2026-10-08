@@ -38,48 +38,343 @@ enum Verdict {
 
 enum RiskEvidenceKind {
   duplicate_photo
+  off_platform_payment_link
+  price_far_below_market
+  off_platform_contact
+  advance_payment_only
+  urgency_pressure
 
   @@map("risk_evidence_kind")
 }
 
-/// A marketplace listing (oglas). Shared by every user who checks it.
-model Listing {
-  id           String        @id @default(uuid()) @db.Uuid
-  marketplace  Marketplace
-  /// The marketplace's own ID for the listing.
-  externalId   String        @map("external_id")
-  canonicalUrl String        @map("canonical_url")
-  title        String
-  city         String?
-  /// Object key in the private listing-photos bucket.
-  photoKey     String?       @map("photo_key")
-  status       ListingStatus @default(active)
-  removedAt    DateTime?     @map("removed_at") @db.Timestamptz
-  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz
+/// A listing someone checked, or one we only saw on a search results page.
+enum ListingKind {
+  checked
+  observation
 
-  checks  ListingCheck[]
-  tracked TrackedListing[]
+  @@map("listing_kind")
+}
+
+/// Mirrors `categories` in src/features/check/listing-facts.ts.
+enum ListingCategory {
+  phones
+  computers
+  tablets
+  game_consoles
+  audio_video
+  cameras
+  cars
+  motorcycles
+  bicycles
+  furniture
+  appliances
+  clothing
+  sports
+  tools
+  other
+
+  @@map("listing_category")
+}
+
+enum CheckStatus {
+  running
+  completed
+  failed
+  removed
+
+  @@map("check_status")
+}
+
+/// Mirrors `stepNames` in src/features/check/check-store.ts.
+enum CheckStepName {
+  read
+  photos
+  extract
+  comparables_njuskalo
+  comparables_facebook_marketplace
+  comparables_index_oglasi
+  seller
+  scam
+  score
+  write
+
+  @@map("check_step_name")
+}
+
+enum CheckStepStatus {
+  queued
+  running
+  done
+  failed
+  skipped
+
+  @@map("check_step_status")
+}
+
+/// A marketplace listing (oglas). Shared by every user who checks it.
+/// Comparable observations are rows with `kind = observation`.
+model Listing {
+  id              String           @id @default(uuid()) @db.Uuid
+  marketplace     Marketplace
+  /// The marketplace's own ID for the listing.
+  externalId      String           @map("external_id")
+  kind            ListingKind      @default(checked)
+  canonicalUrl    String           @map("canonical_url")
+  title           String
+  /// `normalizeTitle(title)`: lowercase, folded, space-padded. Comparables match on it.
+  normalizedTitle String           @map("normalized_title")
+  category        ListingCategory?
+  /// The extractor's search key, for checked listings.
+  searchKey       String?          @map("search_key")
+  description     String?
+  city            String?
+  neighbourhood   String?
+  /// The price when we last saw the listing, in cents.
+  priceCents      Int?             @map("price_cents")
+  seenAt          DateTime         @default(now()) @map("seen_at") @db.Timestamptz
+  postedAt        DateTime?        @map("posted_at") @db.Timestamptz
+  sellerId        String?          @map("seller_id") @db.Uuid
+  /// Object key of the cover photo in the private listing-photos bucket.
+  photoKey        String?          @map("photo_key")
+  status          ListingStatus    @default(active)
+  removedAt       DateTime?        @map("removed_at") @db.Timestamptz
+  /// A labelled demo listing. Its reviews are examples and never count.
+  isDemo          Boolean          @default(false) @map("is_demo")
+  createdAt       DateTime         @default(now()) @map("created_at") @db.Timestamptz
+
+  seller        Seller?             @relation(fields: [sellerId], references: [id], onDelete: SetNull)
+  checks        ListingCheck[]
+  tracked       TrackedListing[]
+  photos        ListingPhoto[]
+  comparableIn  ListingComparable[]
+  reviews       Review[]
+  checklistTick ChecklistTick[]
 
   @@unique([marketplace, externalId])
+  @@index([marketplace, category, seenAt(sort: Desc)])
+  @@index([normalizedTitle(ops: raw("gin_trgm_ops"))], type: Gin)
+  @@index([sellerId])
   @@map("listing")
 }
 
-/// One completed check of a listing.
-model ListingCheck {
-  id                 String            @id @default(uuid()) @db.Uuid
-  listingId          String            @map("listing_id") @db.Uuid
-  checkedAt          DateTime          @map("checked_at") @db.Timestamptz
-  priceCents         Int               @map("price_cents")
-  verdict            Verdict
-  marketAverageCents Int?              @map("market_average_cents")
-  comparableCount    Int               @map("comparable_count")
-  riskEvidenceKind   RiskEvidenceKind? @map("risk_evidence_kind")
-  riskEvidenceCount  Int?              @map("risk_evidence_count")
+/// One photo of a checked listing, copied into the private bucket (ADR 0007).
+/// The pHash outlives the file: `deletedAt` marks the retention sweep.
+model ListingPhoto {
+  id        String    @id @default(uuid()) @db.Uuid
+  listingId String    @map("listing_id") @db.Uuid
+  position  Int
+  objectKey String    @map("object_key")
+  /// 64-bit perceptual hash, stored signed.
+  phash     BigInt
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
 
   listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
 
+  @@unique([listingId, position])
+  @@map("listing_photo")
+}
+
+/// One check of a listing: running until every step has finished.
+model ListingCheck {
+  id                 String            @id @default(uuid()) @db.Uuid
+  /// Set once the listing has been read.
+  listingId          String?           @map("listing_id") @db.Uuid
+  /// The recognised link the check was started for; reuse is keyed on it.
+  canonicalUrl       String            @map("canonical_url")
+  marketplace        Marketplace
+  status             CheckStatus       @default(running)
+  startedAt          DateTime          @default(now()) @map("started_at") @db.Timestamptz
+  /// When the check finished.
+  checkedAt          DateTime?         @map("checked_at") @db.Timestamptz
+  priceCents         Int?              @map("price_cents")
+  verdict            Verdict           @default(no_data)
+  /// The price verdict before the scam rule.
+  priceVerdict       Verdict?          @map("price_verdict")
+  /// The IQR-trimmed median of all comparables.
+  marketAverageCents Int?              @map("market_average_cents")
+  comparableCount    Int               @default(0) @map("comparable_count")
+  /// The strongest fired scam pattern, for the watchlist row.
+  riskEvidenceKind   RiskEvidenceKind? @map("risk_evidence_kind")
+  riskEvidenceCount  Int?              @map("risk_evidence_count")
+  rulesetVersion     String?           @map("ruleset_version")
+  widenedMatch       Boolean           @default(false) @map("widened_match")
+  /// ListingFacts from the extractor.
+  facts              Json?
+  /// Per-marketplace PriceStats.
+  comparableStats    Json?             @map("comparable_stats")
+  /// OfferScore: value + reason codes, or no_data.
+  offerScore         Json?             @map("offer_score")
+  /// ListingQuality: value + parts, or no_data.
+  listingQuality     Json?             @map("listing_quality")
+  /// SuggestedOffer. Never sent to a guest.
+  suggestedOffer     Json?             @map("suggested_offer")
+  /// PatternResult[] with evidence.
+  scamResults        Json?             @map("scam_results")
+  jevAnswers         Json?             @map("jev_answers")
+  summary            String?
+  /// { key, text, sourceKey }[]
+  questions          Json?
+  /// { key, text }[]
+  checklist          Json?
+  /// The offer message with a `{ponuda}` placeholder.
+  offerMessage       String?           @map("offer_message")
+
+  listing     Listing?            @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  steps       CheckStep[]
+  comparables ListingComparable[]
+
   @@index([listingId, checkedAt(sort: Desc)])
+  @@index([canonicalUrl, startedAt(sort: Desc)])
   @@map("listing_check")
+}
+
+/// One stage of a check, shown as a row on "Provjera u tijeku".
+model CheckStep {
+  id         String          @id @default(uuid()) @db.Uuid
+  checkId    String          @map("check_id") @db.Uuid
+  name       CheckStepName
+  status     CheckStepStatus @default(queued)
+  errorCode  String?         @map("error_code")
+  startedAt  DateTime?       @map("started_at") @db.Timestamptz
+  finishedAt DateTime?       @map("finished_at") @db.Timestamptz
+  /// e.g. { comparableCount: 13 }
+  summary    Json?
+
+  check ListingCheck @relation(fields: [checkId], references: [id], onDelete: Cascade)
+
+  @@unique([checkId, name])
+  @@map("check_step")
+}
+
+/// The comparables a check used: the snapshot behind Najsličniji oglasi.
+model ListingComparable {
+  id                  String      @id @default(uuid()) @db.Uuid
+  checkId             String      @map("check_id") @db.Uuid
+  comparableListingId String      @map("comparable_listing_id") @db.Uuid
+  marketplace         Marketplace
+  /// The price when the check saw it.
+  priceCents          Int         @map("price_cents")
+
+  check   ListingCheck @relation(fields: [checkId], references: [id], onDelete: Cascade)
+  listing Listing      @relation(fields: [comparableListingId], references: [id], onDelete: Cascade)
+
+  @@index([checkId])
+  @@index([comparableListingId])
+  @@map("listing_comparable")
+}
+
+/// One marketplace account (ADR 0008). Never linked to another automatically.
+model Seller {
+  id            String      @id @default(uuid()) @db.Uuid
+  marketplace   Marketplace
+  externalId    String      @map("external_id")
+  displayName   String      @map("display_name")
+  profileUrl    String?     @map("profile_url")
+  memberSince   DateTime?   @map("member_since") @db.Timestamptz
+  city          String?
+  /// SellerFact[]: only facts the marketplace publishes.
+  profileFacts  Json?       @map("profile_facts")
+  lastScrapedAt DateTime?   @map("last_scraped_at") @db.Timestamptz
+  createdAt     DateTime    @default(now()) @map("created_at") @db.Timestamptz
+
+  listings Listing[]
+  claim    SellerClaim?
+  reviews  Review[]
+
+  @@unique([marketplace, externalId])
+  @@map("seller")
+}
+
+/// A user saying "this seller account is mine". First claim wins; no proof in the MVP.
+model SellerClaim {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id")
+  sellerId  String   @unique @map("seller_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  seller Seller @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("seller_claim")
+}
+
+/// A signed-in user's review of a seller, about one listing (ADR 0011).
+model Review {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @map("user_id")
+  sellerId         String   @map("seller_id") @db.Uuid
+  listingId        String   @map("listing_id") @db.Uuid
+  /// 1–5, enforced by a check constraint.
+  stars            Int
+  text             String
+  /// Always false on real reviews until purchases can be proven.
+  verifiedPurchase Boolean  @default(false) @map("verified_purchase")
+  isDemo           Boolean  @default(false) @map("is_demo")
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  seller  Seller          @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  listing Listing         @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  reply   ReviewReply?
+  helpful ReviewHelpful[]
+  reports ReviewReport[]
+
+  @@unique([userId, sellerId])
+  @@index([sellerId, createdAt(sort: Desc)])
+  @@map("review")
+}
+
+/// The claiming seller's one reply to a review.
+model ReviewReply {
+  id        String   @id @default(uuid()) @db.Uuid
+  reviewId  String   @unique @map("review_id") @db.Uuid
+  userId    String   @map("user_id")
+  text      String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  review Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+  @@map("review_reply")
+}
+
+model ReviewHelpful {
+  id        String   @id @default(uuid()) @db.Uuid
+  reviewId  String   @map("review_id") @db.Uuid
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  review Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+  @@unique([reviewId, userId])
+  @@map("review_helpful")
+}
+
+/// "Prijavi": stored only, no moderation tooling yet.
+model ReviewReport {
+  id        String   @id @default(uuid()) @db.Uuid
+  reviewId  String   @map("review_id") @db.Uuid
+  userId    String   @map("user_id")
+  reason    String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  review Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+  @@unique([reviewId, userId])
+  @@map("review_report")
+}
+
+/// A ticked "Provjeri prije plaćanja" item, per user and listing.
+model ChecklistTick {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id")
+  listingId String   @map("listing_id") @db.Uuid
+  itemKey   String   @map("item_key")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, listingId, itemKey])
+  @@map("checklist_tick")
 }
 
 /// A user following a listing. `userId` holds `neon_auth.user.id`.

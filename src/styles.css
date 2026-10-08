@@ -27,6 +27,9 @@
   --color-bg-danger: #b92d1f;
   --color-bg-danger-subtle: #fdecea;
   --color-bg-sand: #f6f4e6;
+  --color-bg-positive-subtle: #e6f0eb;
+  --color-bg-neutral-hover: #e4e8dc;
+  --color-bg-inverse: #1a2410;
   --color-bg-icon-tint: rgb(255 255 255 / 0.4);
 
   --color-text-primary: #1a2410;
@@ -38,17 +41,25 @@
   --color-text-warning: #5e4400;
   --color-text-danger: #96220f;
   --color-text-info: #1f4d68;
+  --color-text-positive: #34574a;
+  --color-text-inverse: #ffffff;
 
   --color-icon-primary: #1a2410;
   --color-icon-secondary: #646d5b;
   --color-icon-warning: #8a6400;
   --color-icon-danger: #b92d1f;
   --color-icon-info: #1f4d68;
+  --color-icon-brand: #556b30;
+  --color-icon-positive: #34574a;
 
   --color-border-default: #e4e8dc;
   --color-border-strong: #cfd5c4;
   --color-border-focus: #708a40;
   --color-border-danger: #b92d1f;
+  /* The Pastel Field, Deep Edge Rule: chart zones get an edge in their deep step. */
+  --color-border-positive: #44705c;
+  --color-border-info: #2f6f94;
+  --color-border-warning: #8a6400;
 
   --radius-xs: 4px;
   --radius-sm: 8px;
@@ -63,6 +74,10 @@
   --text-heading-large--line-height: 38px;
   --text-heading-large--letter-spacing: -0.015em;
   --text-heading-large--font-weight: 800;
+  --text-heading-medium: 24px;
+  --text-heading-medium--line-height: 30px;
+  --text-heading-medium--letter-spacing: -0.01em;
+  --text-heading-medium--font-weight: 700;
   --text-heading-small: 20px;
   --text-heading-small--line-height: 28px;
   --text-heading-small--letter-spacing: -0.01em;
@@ -84,6 +99,10 @@
   --text-label--line-height: 20px;
   --text-label--letter-spacing: -0.005em;
   --text-label--font-weight: 600;
+  --text-price-xl: 48px;
+  --text-price-xl--line-height: 52px;
+  --text-price-xl--letter-spacing: -0.03em;
+  --text-price-xl--font-weight: 800;
   --text-price: 24px;
   --text-price--line-height: 28px;
   --text-price--letter-spacing: -0.015em;
@@ -93,6 +112,11 @@
   --text-label-small--font-weight: 500;
   --text-caption: 12px;
   --text-caption--line-height: 16px;
+}
+
+/* Bricolage's 96pt optical size, for Price XL. */
+@utility opsz-96 {
+  font-variation-settings: 'opsz' 96;
 }
 
 /* The 2px focus ring with a 2px offset, keyboard only. */

@@ -3,7 +3,17 @@
 
 import type { Marketplace, Verdict } from '#/lib/listing'
 
-export type RiskEvidence = { kind: 'duplicate_photo'; count: number }
+/** The strongest scam pattern of the latest check (ADR 0010), as the row shows it. */
+export type RiskEvidence =
+  | { kind: 'duplicate_photo'; count: number }
+  | {
+      kind:
+        | 'off_platform_payment_link'
+        | 'price_far_below_market'
+        | 'off_platform_contact'
+        | 'advance_payment_only'
+        | 'urgency_pressure'
+    }
 
 /** The one secondary line under a row's price, in priority order. */
 export type RowLine =

@@ -3,7 +3,8 @@ import type { ReactNode } from 'react'
 type WatchlistRowProps = {
   /** Title, verdict, price and the secondary line, read as one name. */
   accessibleName: string
-  title: string
+  /** The title text, or a link to the listing's report. */
+  title: ReactNode
   photoUrl: string | null
   /** The verdict badge, or a status where a listing has none. */
   badge: ReactNode

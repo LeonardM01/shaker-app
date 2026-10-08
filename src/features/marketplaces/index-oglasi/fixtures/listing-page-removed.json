@@ -1,0 +1,11 @@
+{
+  "pageUrl": "https://www.index.hr/oglasi/mobiteli/iphone/oglas/apple-iphone-11/3000000",
+  "capturedAt": "2026-10-08",
+  "responses": [
+    {
+      "url": "https://www.index.hr/oglasi/api/aditem/single-ad?code=3000000&format=1",
+      "status": 404,
+      "body": "{\"adId\":\"5c294bee-e76a-41d8-ba36-7f95228f9f2e\",\"redirectUrl\":\"auto-moto/dijelovi-dodaci\",\"category\":\"dijelovi-dodaci\",\"module\":\"auto-moto\"}"
+    }
+  ]
+}

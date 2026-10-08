@@ -13,9 +13,12 @@ dist-ssr
 .tanstack
 .wrangler
 .output
+# Workflow SDK local runs
+.workflow-data
 .vinxi
 .vercel
 __unconfig*
 
 # prisma
 src/generated
+/.swc

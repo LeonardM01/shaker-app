@@ -19,6 +19,10 @@ import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as AppCheckRouteImport } from './routes/app/check'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ApiCronPhotoRetentionRouteImport } from './routes/api/cron/photo-retention'
+import { Route as ApiCronRecheckRouteImport } from './routes/api/cron/recheck'
+import { Route as AppChecksCheckIdRouteImport } from './routes/app/checks.$checkId'
+import { Route as AppListingListingIdRouteImport } from './routes/app/listing.$listingId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -70,6 +74,26 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCronPhotoRetentionRoute = ApiCronPhotoRetentionRouteImport.update({
+  id: '/api/cron/photo-retention',
+  path: '/api/cron/photo-retention',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCronRecheckRoute = ApiCronRecheckRouteImport.update({
+  id: '/api/cron/recheck',
+  path: '/api/cron/recheck',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppChecksCheckIdRoute = AppChecksCheckIdRouteImport.update({
+  id: '/checks/$checkId',
+  path: '/checks/$checkId',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppListingListingIdRoute = AppListingListingIdRouteImport.update({
+  id: '/listing/$listingId',
+  path: '/listing/$listingId',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -82,6 +106,10 @@ export interface FileRoutesByFullPath {
   '/app/check': typeof AppCheckRoute
   '/app/': typeof AppIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/cron/photo-retention': typeof ApiCronPhotoRetentionRoute
+  '/api/cron/recheck': typeof ApiCronRecheckRoute
+  '/app/checks/$checkId': typeof AppChecksCheckIdRoute
+  '/app/listing/$listingId': typeof AppListingListingIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -93,6 +121,10 @@ export interface FileRoutesByTo {
   '/app/check': typeof AppCheckRoute
   '/app': typeof AppIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/cron/photo-retention': typeof ApiCronPhotoRetentionRoute
+  '/api/cron/recheck': typeof ApiCronRecheckRoute
+  '/app/checks/$checkId': typeof AppChecksCheckIdRoute
+  '/app/listing/$listingId': typeof AppListingListingIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -106,6 +138,10 @@ export interface FileRoutesById {
   '/app/check': typeof AppCheckRoute
   '/app/': typeof AppIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/cron/photo-retention': typeof ApiCronPhotoRetentionRoute
+  '/api/cron/recheck': typeof ApiCronRecheckRoute
+  '/app/checks/$checkId': typeof AppChecksCheckIdRoute
+  '/app/listing/$listingId': typeof AppListingListingIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -120,6 +156,10 @@ export interface FileRouteTypes {
     | '/app/check'
     | '/app/'
     | '/api/auth/$'
+    | '/api/cron/photo-retention'
+    | '/api/cron/recheck'
+    | '/app/checks/$checkId'
+    | '/app/listing/$listingId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -131,6 +171,10 @@ export interface FileRouteTypes {
     | '/app/check'
     | '/app'
     | '/api/auth/$'
+    | '/api/cron/photo-retention'
+    | '/api/cron/recheck'
+    | '/app/checks/$checkId'
+    | '/app/listing/$listingId'
   id:
     | '__root__'
     | '/'
@@ -143,6 +187,10 @@ export interface FileRouteTypes {
     | '/app/check'
     | '/app/'
     | '/api/auth/$'
+    | '/api/cron/photo-retention'
+    | '/api/cron/recheck'
+    | '/app/checks/$checkId'
+    | '/app/listing/$listingId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -154,6 +202,8 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   ApiHealthRoute: typeof ApiHealthRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiCronPhotoRetentionRoute: typeof ApiCronPhotoRetentionRoute
+  ApiCronRecheckRoute: typeof ApiCronRecheckRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -228,17 +278,49 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cron/photo-retention': {
+      id: '/api/cron/photo-retention'
+      path: '/api/cron/photo-retention'
+      fullPath: '/api/cron/photo-retention'
+      preLoaderRoute: typeof ApiCronPhotoRetentionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/recheck': {
+      id: '/api/cron/recheck'
+      path: '/api/cron/recheck'
+      fullPath: '/api/cron/recheck'
+      preLoaderRoute: typeof ApiCronRecheckRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/checks/$checkId': {
+      id: '/app/checks/$checkId'
+      path: '/checks/$checkId'
+      fullPath: '/app/checks/$checkId'
+      preLoaderRoute: typeof AppChecksCheckIdRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/app/listing/$listingId': {
+      id: '/app/listing/$listingId'
+      path: '/listing/$listingId'
+      fullPath: '/app/listing/$listingId'
+      preLoaderRoute: typeof AppListingListingIdRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
   }
 }
 
 interface AppRouteRouteChildren {
   AppCheckRoute: typeof AppCheckRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppChecksCheckIdRoute: typeof AppChecksCheckIdRoute
+  AppListingListingIdRoute: typeof AppListingListingIdRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppCheckRoute: AppCheckRoute,
   AppIndexRoute: AppIndexRoute,
+  AppChecksCheckIdRoute: AppChecksCheckIdRoute,
+  AppListingListingIdRoute: AppListingListingIdRoute,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
@@ -254,16 +336,19 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   ApiHealthRoute: ApiHealthRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiCronPhotoRetentionRoute: ApiCronPhotoRetentionRoute,
+  ApiCronRecheckRoute: ApiCronRecheckRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
 
 import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
+import type { startInstance } from './start.ts'
 declare module '@tanstack/react-start' {
   interface Register {
     ssr: true
     router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
   }
 }
