@@ -1,0 +1,93 @@
+{
+  "source": "figma:yYrUqxBmK1rH5djf9hvIF4 (page: Design System)",
+  "modes": [
+    "light",
+    "dark"
+  ],
+  "shadows": {
+    "raised": "0 2px 8px rgba(26,36,16,0.08)",
+    "overlay": "0 2px 6px rgba(26,36,16,0.08), 0 12px 32px -4px rgba(26,36,16,0.14)",
+    "panel": "-8px 0 40px rgba(26,36,16,0.18)"
+  },
+  "focusRing": {
+    "width": "2px",
+    "offset": "2px",
+    "color": {
+      "light": "#708A40",
+      "dark": "#BCD48F"
+    }
+  },
+  "semanticTokens": {
+    "light": {
+      "bg-screen": "#FFFFFF",
+      "bg-neutral": "#F1F3EC",
+      "bg-brand": "#A6C36F",
+      "bg-brand-muted": "#D3E3B4",
+      "bg-accent": "#86BAA1",
+      "bg-info": "#B0DAF1",
+      "bg-sand": "#F6F4E6",
+      "bg-inverse": "#1A2410",
+      "text-primary": "#1A2410",
+      "text-secondary": "#4D5645",
+      "text-brand": "#556B30",
+      "border-default": "#E4E8DC",
+      "text-tertiary": "#646D5B"
+    },
+    "dark": {
+      "bg-screen": "#11180A",
+      "bg-neutral": "#212B19",
+      "bg-brand": "#A6C36F",
+      "bg-brand-muted": "#3E4F23",
+      "bg-accent": "#86BAA1",
+      "bg-info": "#B0DAF1",
+      "bg-sand": "#212B19",
+      "bg-inverse": "#FFFFFF",
+      "text-primary": "#FFFFFF",
+      "text-secondary": "#B1B9A4",
+      "text-brand": "#BCD48F",
+      "border-default": "#26301E"
+    }
+  },
+  "icons": "lucide (MIT), 24px, stroke 2",
+  "fonts": {
+    "display": "Bricolage Grotesque (opsz 96, 800)",
+    "ui": "Inter (400/500/600)"
+  },
+  "paletteVersion": "v2-olive",
+  "dataEdges": {
+    "positive": {
+      "light": "#44705C",
+      "dark": "#A8CCBB"
+    },
+    "info": {
+      "light": "#2F6F94",
+      "dark": "#B0DAF1"
+    },
+    "warning": {
+      "light": "#8A6400",
+      "dark": "#FFCF56"
+    },
+    "dataPoint": {
+      "light": "#6B7462",
+      "dark": "#919B83"
+    }
+  },
+  "iconTint": {
+    "light": "rgba(255,255,255,0.40)",
+    "dark": "rgba(255,255,255,0.14)"
+  },
+  "hostMocks": {
+    "facebook-light": {
+      "bg": "#F0F2F5",
+      "surface": "#FFFFFF",
+      "text": "#050505",
+      "secondary": "#65676B"
+    },
+    "facebook-dark": {
+      "bg": "#18191A",
+      "surface": "#242526",
+      "text": "#E4E6EB",
+      "secondary": "#B0B3B8"
+    }
+  }
+}
