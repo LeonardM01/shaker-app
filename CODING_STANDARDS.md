@@ -66,20 +66,21 @@ Lint and format configuration (ESLint flat config, Prettier, tsconfig strictness
 
 ## Database (Neon Postgres)
 
-- Connect with Neon's serverless driver (`@neondatabase/serverless`). Use the HTTP query function for one-shot queries and a WebSocket `Pool`/`Client` only where you need interactive transactions.
-- Use the **pooled** connection string (`-pooler` host) from Vercel functions. Read it from `DATABASE_URL` through the validated env module; never hardcode it.
-- Every query is parameterised. Never build SQL by string concatenation with user or scraped input.
-- Schema changes go through migration files committed to the repo. No ad-hoc DDL against shared branches.
+- Query through Prisma 7 (`getDb()` from `src/lib/db.server.ts`), which connects with `@prisma/adapter-neon`. Keep `prisma`, `@prisma/client` and `@prisma/adapter-neon` on the same version; `prisma@latest` is a Prisma 8 prerelease, so never install it unpinned.
+- The app uses the **pooled** `DATABASE_URL`; the Prisma CLI uses `DATABASE_URL_UNPOOLED` (set in `prisma.config.ts`). Both come from `.env.local` locally; never hardcode them.
+- Every query is parameterised. Use the Prisma client or tagged `$queryRaw`; never `$queryRawUnsafe` or SQL built by string concatenation with user or scraped input.
+- Prisma owns the `public` schema only. Never model, migrate or write to `neon_auth`; store a user's `neon_auth.user.id` as a plain string column.
+- Schema changes go through `prisma migrate dev` on a dev branch and committed migration files. No `prisma db push` or ad-hoc DDL against shared branches.
 - Use Neon branches for preview deployments and for testing migrations. Never run a migration against production by hand.
 - Every `UPDATE`/`DELETE` has a `WHERE` clause. Reads that serve a list are paginated.
 - Store money as integer cents (`integer`/`bigint`), never floats. Store timestamps as `timestamptz` in UTC; format for `hr-HR` only at render time.
-- If an ORM or query builder is added, record the choice as an ADR and add its rules here.
 
 ## Auth (Neon Auth)
 
-- Neon Auth is managed Better Auth. Users and sessions live in the `neon_auth` schema of our own database and branch with it. Use Neon's SDK (`@neondatabase/neon-js`, `@neondatabase/auth-ui`); check the installed version's docs, since the TanStack Start server-side API is still settling.
+- Neon Auth is managed Better Auth. Users and sessions live in the `neon_auth` schema of our own database and branch with it.
+- The browser talks only to our same-origin proxy at `/api/auth/*` (`src/routes/api/auth/$.ts`) through `getAuthClient()`, never to Neon Auth directly, so cookies stay first-party. Our TanStack Start adapter is `src/lib/auth/auth.server.ts`, built on the beta toolkit in `@neondatabase/auth/server`; keep that package pinned and read its changelog before upgrading.
 - Auth is opt-in per feature. Public pages (landing, a shared report) must work signed out.
-- On the server, read the session from the request inside the server function or server route that needs it. Reject when there is none and scope every query by the session's user ID. The client never sends a user ID the server trusts.
+- On the server, call `getAuthServer().getSession()` inside the server function or server route that needs it. Reject when there is none and scope every query by the session's user ID. The client never sends a user ID the server trusts.
 - Route guards (`beforeLoad` + `redirect`) are for UX. The authorisation check that matters lives in the server function.
 - Never write to the `neon_auth` schema ourselves; it belongs to the auth service. Our tables reference `neon_auth.user.id` and don't copy profile data we don't need.
 - Verify Neon Auth webhooks before acting on them.
@@ -87,16 +88,16 @@ Lint and format configuration (ESLint flat config, Prettier, tsconfig strictness
 ## Asset storage (Neon Object Storage)
 
 - Files (uploaded images, listing snapshots, generated assets) go in Neon Object Storage buckets. Postgres stores the object key and metadata, never the file bytes.
-- Talk to it with the S3 SDK (`@aws-sdk/client-s3`) pointed at the branch endpoint, with `forcePathStyle: true`. Endpoint and credentials come from the validated env module.
-- Buckets are `private` by default. Use `public_read` only for assets meant for anyone (landing page images). Serve private objects through short-lived presigned URLs created in a server function after the auth check.
+- Talk to it through `getStorage()` from `src/lib/storage.server.ts` (the S3 SDK with `forcePathStyle: true`, configured from the validated env module).
+- Buckets are declared in `neon.ts`. Today there is one, `assets`, which is `public_read`: anything in it can be read by anyone with the URL, so never put private user files there. Add a `private` bucket when the first private file appears. Serve private objects through short-lived presigned URLs created in a server function after the auth check.
 - Browser uploads go through a presigned upload URL from a server function that has already checked auth, content type and size. Never pass storage credentials to the client.
 - Object keys are built by the server, not taken from user input (`{feature}/{userId}/{uuid}.{ext}`).
 - Buckets branch with the database, so preview deployments get their own copy. Don't point a preview at the production branch's bucket.
 
 ## Environment and secrets (Vercel)
 
-- All env vars are read through one module that parses them with Zod at startup and fails fast on missing values. Nothing else reads `process.env` / `import.meta.env` directly.
-- Only variables prefixed `VITE_` reach the browser bundle. Secrets (`DATABASE_URL`, the `AWS_*` storage credentials, scraping credentials) never carry that prefix.
+- All server env vars are read through `getServerEnv()` in `src/lib/env.server.ts`, which parses them with Zod and fails on the first call if one is missing. Nothing else reads `process.env` / `import.meta.env` directly.
+- Only variables prefixed `VITE_` reach the browser bundle. Secrets (`DATABASE_URL`, `NEON_AUTH_COOKIE_SECRET`, the `AWS_*` storage credentials, scraping credentials) never carry that prefix.
 - Configure values per Vercel environment (Development, Preview, Production). Never commit `.env*` files other than a `.env.example` with placeholder values.
 - Long or heavy work (scraping a batch of comparable listings) doesn't belong in a request handler that a user waits on. Design it to run as a background or scheduled job, and keep request handlers within Vercel function limits.
 
