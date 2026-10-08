@@ -33,7 +33,7 @@ Figma: https://www.figma.com/design/yYrUqxBmK1rH5djf9hvIF4/SHAKER (landing page 
 | Asset storage | Neon Object Storage buckets (S3-compatible, beta), branch together with the database |
 | Lint / format | ESLint + Prettier, see `docs/research/eslint-prettier-tanstack-start.md` |
 
-The landing page and the web app are both TanStack Start. The scaffold is one app at the repo root; whether the landing page stays in it (as public, prerendered routes) or splits out is not decided yet. Record that decision as an ADR in `docs/adr/` when it's made.
+The landing page and the web app are both TanStack Start. The scaffold is one app at the repo root. The landing page is static HTML served at `/` from that app, and `/landing` redirects to `/` (see `docs/adr/0012-landing-page-at-root.md`).
 
 Neon infrastructure (Auth, the `assets` bucket) is declared in `neon.ts` and applied with `neon deploy`. The repo is linked to Neon project `shaker-app` (`curly-river-27382655`), branch `production`; `neon link`/`neon deploy` write the branch's variables to `.env.local`. `NEON_AUTH_COOKIE_SECRET` is ours, not Neon's: generate it with `openssl rand -base64 32`.
 
