@@ -311,6 +311,8 @@ model Review {
   /// Always false on real reviews until purchases can be proven.
   verifiedPurchase Boolean  @default(false) @map("verified_purchase")
   isDemo           Boolean  @default(false) @map("is_demo")
+  /// Set only on extension reviews, which all belong to the anonymous user (ADR 0014).
+  installId        String?  @map("install_id")
   createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   seller  Seller          @relation(fields: [sellerId], references: [id], onDelete: Cascade)
@@ -319,7 +321,9 @@ model Review {
   helpful ReviewHelpful[]
   reports ReviewReport[]
 
-  @@unique([userId, sellerId])
+  /// NULLS NOT DISTINCT in the migration: one review per seller per signed-in
+  /// user, and per install for the anonymous user. Prisma can't express it.
+  @@unique([userId, sellerId, installId])
   @@index([sellerId, createdAt(sort: Desc)])
   @@map("review")
 }

@@ -83,6 +83,8 @@ export type StoredReview = {
   text: string
   verifiedPurchase: boolean
   isDemo: boolean
+  /** Extension reviews only (ADR 0014). */
+  installId: string | null
   createdAt: Date
 }
 
@@ -90,6 +92,8 @@ export type StoredPhotoRow = StoredPhoto & { listingId: string; deletedAt: Date 
 
 let counter = 0
 const nextId = (prefix: string) => `${prefix}-${String(++counter)}`
+/** Rows keyed by `@db.Uuid` in Postgres get real UUIDs here too. */
+const randomUUID = () => crypto.randomUUID()
 
 /** Mirrors the check pipeline's tables in memory. */
 export class InMemoryCheckStore implements CheckStore {
@@ -103,7 +107,7 @@ export class InMemoryCheckStore implements CheckStore {
   // Seeding helpers --------------------------------------------------------
 
   addListing(seed: Partial<StoredListing> & Pick<StoredListing, 'title' | 'marketplace'>): StoredListing {
-    const id = seed.id ?? nextId('listing')
+    const id = seed.id ?? randomUUID()
     const listing: StoredListing = {
       id,
       kind: 'observation',
@@ -131,7 +135,7 @@ export class InMemoryCheckStore implements CheckStore {
 
   addSeller(seed: Partial<StoredSeller> & Pick<StoredSeller, 'marketplace' | 'externalId'>): StoredSeller {
     const seller: StoredSeller = {
-      id: seed.id ?? nextId('seller'),
+      id: seed.id ?? randomUUID(),
       displayName: 'Prodavač',
       profileUrl: null,
       profile: null,
@@ -144,12 +148,13 @@ export class InMemoryCheckStore implements CheckStore {
 
   addReview(seed: Partial<StoredReview> & Pick<StoredReview, 'sellerId' | 'stars'>): StoredReview {
     const review: StoredReview = {
-      id: nextId('review'),
+      id: randomUUID(),
       userId: nextId('user'),
       listingId: 'listing-x',
       text: 'Sve u redu.',
       verifiedPurchase: false,
       isDemo: false,
+      installId: null,
       createdAt: new Date(0),
       ...seed,
     }
@@ -188,7 +193,7 @@ export class InMemoryCheckStore implements CheckStore {
   }
 
   createCheck = (input: { canonicalUrl: string; marketplace: Marketplace; startedAt: Date }) => {
-    const id = nextId('check')
+    const id = randomUUID()
     this.checks.set(id, {
       id,
       ...input,
@@ -252,7 +257,7 @@ export class InMemoryCheckStore implements CheckStore {
     }
     const listing = existing
       ? Object.assign(existing, fields)
-      : this.addListing({ ...fields, id: nextId('listing') })
+      : this.addListing({ ...fields, id: randomUUID() })
     this.check(checkId).listingId = listing.id
     return Promise.resolve({ listingId: listing.id, sellerId })
   }

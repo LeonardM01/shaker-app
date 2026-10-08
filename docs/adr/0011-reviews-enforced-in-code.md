@@ -1,6 +1,6 @@
 # 0011: Review rules are enforced in code, with no moderation
 
-- Status: accepted
+- Status: accepted, amended by ADR 0014 for extension reviews
 - Date: 2026-10-08
 
 ## Context

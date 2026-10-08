@@ -26,6 +26,9 @@ const pipelineEnvSchema = z.object({
   JEV_API_KEY: z.string().min(1),
 })
 
+/** "Anonimni korisnik" in Neon Auth: the extension's reviews belong to it (ADR 0014). */
+const extensionEnvSchema = z.object({ EXTENSION_ANONYMOUS_USER_ID: z.uuid() })
+
 /** Vercel Cron sends it as a bearer token to the scheduled-job routes. */
 const cronEnvSchema = z.object({ CRON_SECRET: z.string().min(16) })
 
@@ -34,6 +37,7 @@ export type PipelineEnv = z.infer<typeof pipelineEnvSchema>
 let cached: ServerEnv | undefined
 let cachedPipeline: PipelineEnv | undefined
 let cachedCron: z.infer<typeof cronEnvSchema> | undefined
+let cachedExtension: z.infer<typeof extensionEnvSchema> | undefined
 
 /** The only reader of `process.env`. Throws on the first call if a variable is missing. */
 export const getServerEnv = createServerOnlyFn((): ServerEnv => {
@@ -51,4 +55,10 @@ export const getPipelineEnv = createServerOnlyFn((): PipelineEnv => {
 export const getCronEnv = createServerOnlyFn(() => {
   cachedCron ??= cronEnvSchema.parse(process.env)
   return cachedCron
+})
+
+/** Throws on the first call if `EXTENSION_ANONYMOUS_USER_ID` is missing. */
+export const getExtensionEnv = createServerOnlyFn(() => {
+  cachedExtension ??= extensionEnvSchema.parse(process.env)
+  return cachedExtension
 })
