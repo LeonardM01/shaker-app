@@ -2,33 +2,38 @@ import { createFileRoute, redirect } from '@tanstack/react-router'
 import { z } from 'zod'
 
 import { shellCopy } from '#/components/ui/copy'
-import { marketplaceNames } from '#/features/home/copy'
 import { recognizeListingLink } from '#/features/home/link-recognition'
+import { startCheckFn } from '#/features/report/check.functions'
 
 /**
- * "Provjera u tijeku": the navigation target for a recognised link. Running
- * the check (DB lookup, scraping, writing listing_check rows) is the check
- * flow's job; this route only re-validates the link it was given.
+ * "Provjeri" lands here: a recognised link starts a check, or reuses one from
+ * the last 6 hours, then moves on to its progress or straight to the report.
+ * Preloading never starts a check.
  */
 export const Route = createFileRoute('/app/check')({
   validateSearch: z.object({ url: z.string().max(2048) }),
-  beforeLoad: ({ search }) => {
+  beforeLoad: async ({ search, preload }) => {
     const recognition = recognizeListingLink(search.url)
     if (recognition.kind !== 'recognised') throw redirect({ to: '/app' })
-    return { recognition }
+    if (preload) return
+    // Never forced here: loading a URL may run more than once, and a repeat
+    // only reuses the check this one started.
+    const started = await startCheckFn({ data: { url: recognition.canonicalUrl, force: false } })
+    if (started.kind === 'report') {
+      throw redirect({ to: '/app/listing/$listingId', params: { listingId: started.listingId } })
+    }
+    throw redirect({ to: '/app/checks/$checkId', params: { checkId: started.checkId } })
   },
   head: () => ({ meta: [{ title: `${shellCopy.pendingScreens.check} · Shaker` }] }),
-  component: CheckPage,
+  pendingComponent: () => <div aria-busy className="min-h-dvh" />,
+  errorComponent: CheckStartFailed,
 })
 
-function CheckPage() {
-  const { recognition } = Route.useRouteContext()
+function CheckStartFailed() {
   return (
-    <div className="mx-auto flex max-w-180 flex-col gap-2 px-4 pt-10 md:px-12">
+    <div className="mx-auto flex max-w-180 flex-col gap-2 px-4 pt-10 md:px-0">
       <h1 className="font-display text-heading-large">{shellCopy.pendingScreens.check}</h1>
-      <p className="text-body text-text-secondary">
-        {marketplaceNames[recognition.marketplace]} · {recognition.canonicalUrl}
-      </p>
+      <p className="text-body text-text-secondary">{shellCopy.checkStartFailed}</p>
     </div>
   )
 }

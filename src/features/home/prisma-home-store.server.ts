@@ -1,4 +1,5 @@
 import type { CheckSnapshot, HomeStore, TrackedListingState } from '#/features/home/home-store'
+import type { RiskEvidence } from '#/features/home/home-result'
 import type { PrismaClient } from '#/generated/prisma/client'
 
 type StateRow = {
@@ -10,7 +11,7 @@ type StateRow = {
   verdict: CheckSnapshot['verdict']
   market_average_cents: number | null
   comparable_count: number
-  risk_evidence_kind: 'duplicate_photo' | null
+  risk_evidence_kind: RiskEvidence['kind'] | null
   risk_evidence_count: number | null
 }
 
@@ -21,11 +22,15 @@ function toSnapshot(row: StateRow): CheckSnapshot {
     verdict: row.verdict,
     marketAverageCents: row.market_average_cents,
     comparableCount: row.comparable_count,
-    riskEvidence:
-      row.risk_evidence_kind && row.risk_evidence_count !== null
-        ? { kind: row.risk_evidence_kind, count: row.risk_evidence_count }
-        : null,
+    riskEvidence: riskEvidenceOf(row),
   }
+}
+
+function riskEvidenceOf(row: StateRow): RiskEvidence | null {
+  const kind = row.risk_evidence_kind
+  if (!kind) return null
+  if (kind !== 'duplicate_photo') return { kind }
+  return row.risk_evidence_count === null ? null : { kind, count: row.risk_evidence_count }
 }
 
 export function createPrismaHomeStore(db: PrismaClient): HomeStore {
@@ -33,7 +38,7 @@ export function createPrismaHomeStore(db: PrismaClient): HomeStore {
     async listTrackedStates(userId) {
       // At most two rows per tracked listing (its latest two checks), read
       // through the (listing_id, checked_at DESC) index. Listings without a
-      // check yet drop out of the inner join.
+      // finished check with a price yet drop out of the inner join.
       const rows = await db.$queryRaw<StateRow[]>`
         SELECT l.id AS listing_id, l.status::text AS status, l.removed_at,
                c.checked_at, c.price_cents, c.verdict::text AS verdict,
@@ -44,6 +49,8 @@ export function createPrismaHomeStore(db: PrismaClient): HomeStore {
         CROSS JOIN LATERAL (
           SELECT * FROM listing_check lc
           WHERE lc.listing_id = l.id
+            AND lc.status = 'completed'
+            AND lc.price_cents IS NOT NULL
           ORDER BY lc.checked_at DESC
           LIMIT 2
         ) c

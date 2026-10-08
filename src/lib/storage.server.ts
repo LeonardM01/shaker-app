@@ -8,7 +8,7 @@ import { getServerEnv } from '#/lib/env.server'
 export const ASSETS_BUCKET = 'assets'
 
 /** Declared in neon.ts. `private`: served only through short-lived presigned URLs. */
-const listingPhotosBucket = 'listing-photos'
+export const LISTING_PHOTOS_BUCKET = 'listing-photos'
 
 const photoUrlTtlSeconds = 15 * 60
 
@@ -31,7 +31,7 @@ export const getStorage = createServerOnlyFn((): S3Client => {
 
 /** A short-lived read URL for a listing photo. Call only after the auth check. */
 export const signListingPhotoUrl = createServerOnlyFn((photoKey: string) =>
-  getSignedUrl(getStorage(), new GetObjectCommand({ Bucket: listingPhotosBucket, Key: photoKey }), {
+  getSignedUrl(getStorage(), new GetObjectCommand({ Bucket: LISTING_PHOTOS_BUCKET, Key: photoKey }), {
     expiresIn: photoUrlTtlSeconds,
   }),
 )

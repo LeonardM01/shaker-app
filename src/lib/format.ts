@@ -38,3 +38,35 @@ export function formatTimeAgo(date: string | Date, now: string | Date): string {
   if (elapsed < dayMs) return format(Math.floor(elapsed / hourMs), 'hour', 'short')
   return format(Math.floor(elapsed / dayMs), 'day', 'long')
 }
+
+/** Times render in Croatia's zone on the server and in the browser alike. */
+const timeZone = 'Europe/Zagreb'
+
+/** "14:32". */
+export function formatClock(date: string | Date): string {
+  return new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit', timeZone }).format(new Date(date))
+}
+
+/** "3. 10. 2026.", unpadded, which some ICU builds don't give for hr-HR. */
+export function formatDate(date: string | Date): string {
+  const parts = new Intl.DateTimeFormat(locale, {
+    day: 'numeric',
+    month: 'numeric',
+    year: 'numeric',
+    timeZone,
+  }).formatToParts(new Date(date))
+  const part = (type: Intl.DateTimeFormatPartTypes) =>
+    String(Number(parts.find((candidate) => candidate.type === type)?.value))
+  return `${part('day')}. ${part('month')}. ${part('year')}.`
+}
+
+const dayKey = (date: Date) =>
+  new Intl.DateTimeFormat('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit', timeZone }).format(date)
+
+/** 0 when `date` is on `now`'s calendar day in Croatia, 1 the day before, otherwise null. */
+export function recentDayOffset(date: string | Date, now: string | Date): 0 | 1 | null {
+  const at = dayKey(new Date(date))
+  if (at === dayKey(new Date(now))) return 0
+  if (at === dayKey(new Date(new Date(now).getTime() - dayMs))) return 1
+  return null
+}

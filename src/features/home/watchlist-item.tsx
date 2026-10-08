@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router'
 import { ShieldAlert, TrendingDown, TrendingUp } from 'lucide-react'
 import { useState } from 'react'
 import type { ReactNode } from 'react'
@@ -84,7 +85,15 @@ export function WatchlistItem({
     <li className="flex flex-col gap-2">
       <WatchlistRow
         accessibleName={[row.title, status, price, text].join(', ')}
-        title={row.title}
+        title={
+          <Link
+            to="/app/listing/$listingId"
+            params={{ listingId: row.listingId }}
+            className="rounded-xs hover:underline focus-ring"
+          >
+            {row.title}
+          </Link>
+        }
         photoUrl={row.photoUrl}
         badge={
           removed ? (

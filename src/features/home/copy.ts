@@ -19,6 +19,17 @@ const marketplaceShortNames: Record<Marketplace, string> = {
 
 const plural = new Intl.PluralRules('hr-HR')
 
+function duplicatePhotoLine(count: number): string {
+  switch (plural.select(count)) {
+    case 'one':
+      return `ista slika u ${String(count)} drugom oglasu`
+    case 'few':
+      return `ista slika u ${String(count)} druga oglasa`
+    default:
+      return `ista slika u ${String(count)} drugih oglasa`
+  }
+}
+
 export const homeCopy = {
   pageTitle: 'Početna · Shaker',
   heading: 'Provjeri oglas',
@@ -66,14 +77,20 @@ export const homeCopy = {
     meta: (marketplace: Marketplace, city: string | null) =>
       [marketplaceShortNames[marketplace], city].filter(Boolean).join(' · '),
     priceChange: (deltaCents: number) => `${formatPriceDelta(deltaCents)} od zadnje provjere`,
-    riskEvidence: ({ count }: RiskEvidence) => {
-      switch (plural.select(count)) {
-        case 'one':
-          return `ista slika u ${count} drugom oglasu`
-        case 'few':
-          return `ista slika u ${count} druga oglasa`
-        default:
-          return `ista slika u ${count} drugih oglasa`
+    riskEvidence: (evidence: RiskEvidence) => {
+      switch (evidence.kind) {
+        case 'duplicate_photo':
+          return duplicatePhotoLine(evidence.count)
+        case 'off_platform_payment_link':
+          return 'link za plaćanje izvan oglasnika'
+        case 'price_far_below_market':
+          return 'cijena ispod pola tržišne'
+        case 'off_platform_contact':
+          return 'traži dopisivanje izvan oglasnika'
+        case 'advance_payment_only':
+          return 'traži samo uplatu unaprijed'
+        case 'urgency_pressure':
+          return 'požuruje kupca'
       }
     },
     tooFewComparables: 'premalo usporedivih oglasa',

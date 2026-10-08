@@ -62,6 +62,11 @@ async function renderHome(home: HomeResult) {
       path: '/app/check',
       component: () => <p>Provjera u tijeku</p>,
     }),
+    createRoute({
+      getParentRoute: () => rootRoute,
+      path: '/app/listing/$listingId',
+      component: () => <p>Izvještaj oglasa</p>,
+    }),
   ])
   const router = createRouter({
     routeTree,
@@ -265,6 +270,33 @@ describe('Početna: signed in', () => {
     )
 
     expect(screen.getByText(text)).toBeInTheDocument()
+  })
+
+  it.each([
+    ['off_platform_payment_link', 'link za plaćanje izvan oglasnika'],
+    ['price_far_below_market', 'cijena ispod pola tržišne'],
+    ['advance_payment_only', 'traži samo uplatu unaprijed'],
+  ] as const)('words the %s pattern as its evidence', async (kind, text) => {
+    await renderHome(
+      signedIn({
+        changed: [
+          row({ listingId: 'x', verdict: 'risk', line: { kind: 'risk_evidence', evidence: { kind } } }),
+        ],
+      }),
+    )
+
+    expect(screen.getByText(text)).toBeInTheDocument()
+  })
+
+  it("opens a row's report from its title", async () => {
+    const { router, user } = await renderHome(
+      signedIn({ unchanged: [row({ listingId: 'ps5', title: 'PlayStation 5' })], totalCount: 1 }),
+    )
+
+    await user.click(screen.getByRole('link', { name: 'PlayStation 5' }))
+
+    await screen.findByText('Izvještaj oglasa')
+    expect(router.state.location.pathname).toBe('/app/listing/ps5')
   })
 
   it('offers removal only on a removed listing, with its last price', async () => {
