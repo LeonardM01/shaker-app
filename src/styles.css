@@ -1,17 +1,120 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/bricolage-grotesque/opsz.css';
 
-@import "tailwindcss";
+/*
+ * Design tokens from DESIGN.md, named after the Figma variables
+ * (`color/bg/neutral` → `--color-bg-neutral`, used as `bg-bg-neutral`).
+ * Light mode only for now.
+ */
+@theme {
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
 
-* {
-  box-sizing: border-box;
+  --color-*: initial;
+  --color-bg-screen: #ffffff;
+  --color-bg-elevated: #ffffff;
+  --color-bg-neutral: #f1f3ec;
+  --color-bg-brand: #a6c36f;
+  --color-bg-brand-hover: #8daa55;
+  --color-bg-brand-muted: #d3e3b4;
+  --color-bg-brand-subtle: #f5f9ee;
+  --color-bg-accent: #86baa1;
+  --color-bg-info: #b0daf1;
+  --color-bg-info-subtle: #e3f2fb;
+  --color-bg-haggle: #ffcf56;
+  --color-bg-warning-subtle: #fff5d9;
+  --color-bg-danger: #b92d1f;
+  --color-bg-danger-subtle: #fdecea;
+  --color-bg-sand: #f6f4e6;
+  --color-bg-icon-tint: rgb(255 255 255 / 0.4);
+
+  --color-text-primary: #1a2410;
+  --color-text-secondary: #4d5645;
+  --color-text-tertiary: #646d5b;
+  --color-text-brand: #556b30;
+  --color-text-on-brand: #1a2410;
+  --color-text-on-danger: #ffffff;
+  --color-text-warning: #5e4400;
+  --color-text-danger: #96220f;
+  --color-text-info: #1f4d68;
+
+  --color-icon-primary: #1a2410;
+  --color-icon-secondary: #646d5b;
+  --color-icon-warning: #8a6400;
+  --color-icon-danger: #b92d1f;
+  --color-icon-info: #1f4d68;
+
+  --color-border-default: #e4e8dc;
+  --color-border-strong: #cfd5c4;
+  --color-border-focus: #708a40;
+  --color-border-danger: #b92d1f;
+
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+
+  --shadow-overlay: 0 2px 6px rgb(26 36 16 / 0.08), 0 12px 32px -4px rgb(26 36 16 / 0.14);
+
+  --text-heading-large: 32px;
+  --text-heading-large--line-height: 38px;
+  --text-heading-large--letter-spacing: -0.015em;
+  --text-heading-large--font-weight: 800;
+  --text-heading-small: 20px;
+  --text-heading-small--line-height: 28px;
+  --text-heading-small--letter-spacing: -0.01em;
+  --text-heading-small--font-weight: 600;
+  --text-title: 16px;
+  --text-title--line-height: 24px;
+  --text-title--letter-spacing: -0.005em;
+  --text-title--font-weight: 600;
+  --text-body-large: 18px;
+  --text-body-large--line-height: 28px;
+  --text-body-large--letter-spacing: -0.005em;
+  --text-body: 16px;
+  --text-body--line-height: 24px;
+  --text-body--letter-spacing: -0.005em;
+  --text-body-small: 14px;
+  --text-body-small--line-height: 20px;
+  --text-body-small--letter-spacing: -0.005em;
+  --text-label: 14px;
+  --text-label--line-height: 20px;
+  --text-label--letter-spacing: -0.005em;
+  --text-label--font-weight: 600;
+  --text-label-small: 12px;
+  --text-label-small--line-height: 16px;
+  --text-label-small--font-weight: 500;
+  --text-caption: 12px;
+  --text-caption--line-height: 16px;
 }
 
-html,
-body,
-#app {
-  min-height: 100%;
+/* The 2px focus ring with a 2px offset, keyboard only. */
+@utility focus-ring {
+  &:focus-visible {
+    outline: 2px solid var(--color-border-focus);
+    outline-offset: 2px;
+  }
+}
+
+html {
+  font-family: var(--font-sans);
+  color: var(--color-text-primary);
+  background: var(--color-bg-screen);
+  -webkit-font-smoothing: antialiased;
 }
 
 body {
   margin: 0;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

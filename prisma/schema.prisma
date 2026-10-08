@@ -10,3 +10,88 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+enum Marketplace {
+  njuskalo
+  facebook_marketplace
+  index_oglasi
+
+  @@map("marketplace")
+}
+
+enum ListingStatus {
+  active
+  removed
+
+  @@map("listing_status")
+}
+
+enum Verdict {
+  great_price
+  fair_price
+  room_to_haggle
+  risk
+  no_data
+
+  @@map("verdict")
+}
+
+enum RiskEvidenceKind {
+  duplicate_photo
+
+  @@map("risk_evidence_kind")
+}
+
+/// A marketplace listing (oglas). Shared by every user who checks it.
+model Listing {
+  id           String        @id @default(uuid()) @db.Uuid
+  marketplace  Marketplace
+  /// The marketplace's own ID for the listing.
+  externalId   String        @map("external_id")
+  canonicalUrl String        @map("canonical_url")
+  title        String
+  city         String?
+  /// Object key in the private listing-photos bucket.
+  photoKey     String?       @map("photo_key")
+  status       ListingStatus @default(active)
+  removedAt    DateTime?     @map("removed_at") @db.Timestamptz
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz
+
+  checks  ListingCheck[]
+  tracked TrackedListing[]
+
+  @@unique([marketplace, externalId])
+  @@map("listing")
+}
+
+/// One completed check of a listing.
+model ListingCheck {
+  id                 String            @id @default(uuid()) @db.Uuid
+  listingId          String            @map("listing_id") @db.Uuid
+  checkedAt          DateTime          @map("checked_at") @db.Timestamptz
+  priceCents         Int               @map("price_cents")
+  verdict            Verdict
+  marketAverageCents Int?              @map("market_average_cents")
+  comparableCount    Int               @map("comparable_count")
+  riskEvidenceKind   RiskEvidenceKind? @map("risk_evidence_kind")
+  riskEvidenceCount  Int?              @map("risk_evidence_count")
+
+  listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@index([listingId, checkedAt(sort: Desc)])
+  @@map("listing_check")
+}
+
+/// A user following a listing. `userId` holds `neon_auth.user.id`.
+model TrackedListing {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id")
+  listingId String   @map("listing_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, listingId])
+  @@index([listingId])
+  @@map("tracked_listing")
+}

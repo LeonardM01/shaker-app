@@ -45,12 +45,13 @@ Neon infrastructure (Auth, the `assets` bucket) is declared in `neon.ts` and app
 | Dev server | `pnpm dev` (http://localhost:3000) |
 | Build | `pnpm build` |
 | Typecheck | `pnpm typecheck` |
+| Tests | `pnpm test` (Vitest, jsdom); one file: `pnpm vitest run <path>` |
 | Prisma client | `pnpm db:generate` |
 | New migration (dev branch only) | `pnpm db:migrate` |
 | Apply migrations | `pnpm db:deploy` |
 | Health check | `curl localhost:3000/api/health` (database, storage, auth) |
 
-Lint, format and tests are not set up yet; follow `docs/research/eslint-prettier-tanstack-start.md` when adding them.
+Lint and format are not set up yet; follow `docs/research/eslint-prettier-tanstack-start.md` when adding them.
 
 ## Coding standards
 
