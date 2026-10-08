@@ -96,7 +96,7 @@ Lint and format configuration (ESLint flat config, Prettier, tsconfig strictness
 
 ## Environment and secrets (Vercel)
 
-- All server env vars are read through `getServerEnv()` in `src/lib/env.server.ts`, which parses them with Zod and fails on the first call if one is missing. Nothing else reads `process.env` / `import.meta.env` directly.
+- All server env vars are read through `getServerEnv()` in `src/lib/env.server.ts`, which parses them with Zod and fails on the first call if one is missing. Browser-safe `VITE_*` variables are read through `getPublicEnv()` in `src/lib/env.public.ts`. Nothing else reads `process.env` / `import.meta.env` directly.
 - Only variables prefixed `VITE_` reach the browser bundle. Secrets (`DATABASE_URL`, `NEON_AUTH_COOKIE_SECRET`, the `AWS_*` storage credentials, scraping credentials) never carry that prefix.
 - Configure values per Vercel environment (Development, Preview, Production). Never commit `.env*` files other than a `.env.example` with placeholder values.
 - Long or heavy work (scraping a batch of comparable listings) doesn't belong in a request handler that a user waits on. Design it to run as a background or scheduled job, and keep request handlers within Vercel function limits.

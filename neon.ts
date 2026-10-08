@@ -4,5 +4,6 @@ export default defineConfig({
   auth: true,
   buckets: {
     assets: { access: "public_read" },
+    "listing-photos": { access: "private" },
   },
 });
