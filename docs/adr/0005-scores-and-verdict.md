@@ -23,7 +23,7 @@ reviews ≥ 5, n ≥ 5      → reviews + price part at full weight
 ```
 
 - Price part: listing price against the IQR-trimmed median of comparables.
-- Review part: Bayesian average of stars, smoothed toward the platform average, verified-purchase reviews weighted higher.
+- Review part: Bayesian average of stars, smoothed toward the platform average. Verified-purchase reviews get a higher weight once purchases can be verified (ADR 0011); until then all real reviews weigh the same.
 - The comparable count is not shown with the score.
 
 **Kvaliteta oglasa:** always shown.
