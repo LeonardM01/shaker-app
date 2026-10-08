@@ -6,7 +6,7 @@
 
 web
 
-Surfaces: a browser extension (overlay badges on listing pages plus a side panel/popup) and a desktop web app. Mobile is out of scope for now.
+Surfaces: a browser extension (overlay badges on listing pages plus a side panel/popup) and a responsive web app (desktop 1440 and mobile 390, confirmed by the user 2026-10-08). Users paste listing links from Njuškalo, Facebook Marketplace and Index oglasi into the app; sellers improve their own listings in a separate "Moji oglasi" section. No native mobile app for now.
 
 ## Product
 
@@ -33,4 +33,4 @@ Croatian first. English comes later via i18n. All design-system examples use Cro
 
 ## Stack
 
-Undecided (design system work only so far; Figma file: https://www.figma.com/design/yYrUqxBmK1rH5djf9hvIF4/SHAKER).
+Landing page and web app: TanStack Start (React, TypeScript) on Vercel, Neon Postgres, Clerk for auth where an account is needed. Browser extension stack not decided yet. See `CLAUDE.md` and `CODING_STANDARDS.md`. Figma file: https://www.figma.com/design/yYrUqxBmK1rH5djf9hvIF4/SHAKER.
