@@ -1,19 +1,31 @@
+import { useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
-import { shellCopy } from '#/components/ui/copy'
-import { redirectSearchSchema } from '#/lib/auth/redirect-search'
+import { authContextQueryOptions } from '#/features/auth/auth-context.functions'
+import { AuthRoutePage, skipIfSignedIn } from '#/features/auth/auth-route'
+import { authSearchSchema } from '#/features/auth/auth-search'
+import { authCopy } from '#/features/auth/copy'
 
-/**
- * Navigation target for "Prijava". The auth screens themselves (Google and
- * e-mail + password) are specified separately; this route fixes the URL and its
- * `redirect` search param so Početna can link here.
- */
+/** Prijava: Google, or e-mail + password. */
 export const Route = createFileRoute('/sign-in')({
-  validateSearch: redirectSearchSchema,
-  head: () => ({ meta: [{ title: `${shellCopy.pendingScreens.signIn} · Shaker` }] }),
-  component: () => (
-    <main className="mx-auto max-w-100 px-4 pt-16">
-      <h1 className="font-display text-heading-large">{shellCopy.pendingScreens.signIn}</h1>
-    </main>
-  ),
+  validateSearch: authSearchSchema,
+  loaderDeps: ({ search }) => ({ listing: search.listing }),
+  beforeLoad: ({ search }) => skipIfSignedIn(search),
+  loader: ({ context, deps }) =>
+    context.queryClient.ensureQueryData(authContextQueryOptions(deps.listing)),
+  head: () => ({ meta: [{ title: authCopy.signIn.pageTitle }] }),
+  pendingComponent: () => <div aria-busy className="min-h-dvh" />,
+  // Signing in must never depend on the context panel.
+  errorComponent: SignInFallback,
+  component: SignInPage,
 })
+
+function SignInPage() {
+  const search = Route.useSearch()
+  const { data } = useSuspenseQuery(authContextQueryOptions(search.listing))
+  return <AuthRoutePage mode="sign-in" search={search} context={data} />
+}
+
+function SignInFallback() {
+  return <AuthRoutePage mode="sign-in" search={Route.useSearch()} context={{ kind: 'generic' }} />
+}

@@ -44,6 +44,7 @@ export const homeCopy = {
   account: {
     label: 'Tvoj račun',
     signIn: 'Prijavi se',
+    signOut: 'Odjavi se',
   },
 
   banner: {

@@ -102,9 +102,4 @@ export const authCopy = {
       },
     ],
   },
-
-  placeholderPages: {
-    terms: 'Uvjeti korištenja',
-    privacy: 'Pravila privatnosti',
-  },
 } as const

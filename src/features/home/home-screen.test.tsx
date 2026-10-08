@@ -47,12 +47,15 @@ function signedIn(overrides: Partial<Extract<HomeResult, { kind: 'signed_in' }>>
 async function renderHome(home: HomeResult) {
   const onRetry = vi.fn()
   const onUntrack = vi.fn((_listingId: string) => Promise.resolve())
+  const onSignOut = vi.fn()
   const rootRoute = createRootRoute({ component: Outlet })
   const routeTree = rootRoute.addChildren([
     createRoute({
       getParentRoute: () => rootRoute,
       path: '/app',
-      component: () => <HomeScreen home={home} onRetry={onRetry} onUntrack={onUntrack} />,
+      component: () => (
+        <HomeScreen home={home} onRetry={onRetry} onUntrack={onUntrack} onSignOut={onSignOut} />
+      ),
     }),
     createRoute({
       getParentRoute: () => rootRoute,
@@ -66,7 +69,7 @@ async function renderHome(home: HomeResult) {
   })
   render(<RouterProvider router={router} />)
   await screen.findByRole('heading', { level: 1, name: 'Provjeri oglas' })
-  return { router, onRetry, onUntrack, user: userEvent.setup() }
+  return { router, onRetry, onUntrack, onSignOut, user: userEvent.setup() }
 }
 
 const field = () => screen.getByRole('textbox', { name: 'Link oglasa' })
@@ -369,8 +372,27 @@ describe('Početna: signed in', () => {
   it('shows the viewer and no sign-in action', async () => {
     await renderHome(signedIn())
 
-    expect(screen.getByLabelText('Tvoj račun')).toHaveTextContent('MB')
+    expect(screen.getByRole('button', { name: 'Tvoj račun' })).toHaveTextContent('MB')
     expect(screen.queryByRole('link', { name: 'Prijavi se' })).not.toBeInTheDocument()
+  })
+
+  it('signs out from the account menu', async () => {
+    const { onSignOut, user } = await renderHome(signedIn())
+
+    const account = screen.getByRole('button', { name: 'Tvoj račun' })
+    const signOut = screen.getByRole('button', { name: 'Odjavi se', hidden: true })
+    expect(account).toHaveAttribute('popovertarget', signOut.closest('[popover]')?.id)
+    await user.click(signOut)
+
+    expect(onSignOut).toHaveBeenCalledOnce()
+  })
+
+  it('offers sign-out even when the watchlist is unavailable', async () => {
+    const { onSignOut, user } = await renderHome({ kind: 'unavailable', viewer: { initials: 'MB' } })
+
+    await user.click(screen.getByRole('button', { name: 'Odjavi se', hidden: true }))
+
+    expect(onSignOut).toHaveBeenCalledOnce()
   })
 })
 

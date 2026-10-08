@@ -1,19 +1,31 @@
+import { useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
-import { shellCopy } from '#/components/ui/copy'
-import { redirectSearchSchema } from '#/lib/auth/redirect-search'
+import { authContextQueryOptions } from '#/features/auth/auth-context.functions'
+import { AuthRoutePage, skipIfSignedIn } from '#/features/auth/auth-route'
+import { authSearchSchema } from '#/features/auth/auth-search'
+import { authCopy } from '#/features/auth/copy'
 
-/**
- * Navigation target for "Registracija". The auth screens themselves (Google and
- * e-mail + password) are specified separately; this route fixes the URL and its
- * `redirect` search param so Početna can link here.
- */
+/** Registracija: Google, or username + e-mail + password. */
 export const Route = createFileRoute('/sign-up')({
-  validateSearch: redirectSearchSchema,
-  head: () => ({ meta: [{ title: `${shellCopy.pendingScreens.signUp} · Shaker` }] }),
-  component: () => (
-    <main className="mx-auto max-w-100 px-4 pt-16">
-      <h1 className="font-display text-heading-large">{shellCopy.pendingScreens.signUp}</h1>
-    </main>
-  ),
+  validateSearch: authSearchSchema,
+  loaderDeps: ({ search }) => ({ listing: search.listing }),
+  beforeLoad: ({ search }) => skipIfSignedIn(search),
+  loader: ({ context, deps }) =>
+    context.queryClient.ensureQueryData(authContextQueryOptions(deps.listing)),
+  head: () => ({ meta: [{ title: authCopy.signUp.pageTitle }] }),
+  pendingComponent: () => <div aria-busy className="min-h-dvh" />,
+  // Signing up must never depend on the context panel.
+  errorComponent: SignUpFallback,
+  component: SignUpPage,
 })
+
+function SignUpPage() {
+  const search = Route.useSearch()
+  const { data } = useSuspenseQuery(authContextQueryOptions(search.listing))
+  return <AuthRoutePage mode="sign-up" search={search} context={data} />
+}
+
+function SignUpFallback() {
+  return <AuthRoutePage mode="sign-up" search={Route.useSearch()} context={{ kind: 'generic' }} />
+}

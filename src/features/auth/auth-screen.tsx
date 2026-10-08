@@ -40,6 +40,8 @@ export function AuthScreen({ mode, auth, context, search, onSignedIn }: AuthScre
       <div className="flex min-h-dvh min-w-0 flex-1 flex-col lg:min-h-0 lg:px-12 lg:pt-4 lg:pb-8">
         <header className="flex h-16 items-center gap-2 px-4 py-3 lg:hidden">
           <Link
+            // `href` wins over `to`; `to` only satisfies the types.
+            to="/"
             href={destination}
             aria-label={authCopy.back}
             className="relative flex size-10 shrink-0 items-center justify-center rounded-full bg-bg-neutral focus-ring before:absolute before:-inset-0.5 before:content-['']"
@@ -53,7 +55,7 @@ export function AuthScreen({ mode, auth, context, search, onSignedIn }: AuthScre
         </header>
         <header className="hidden items-center justify-between lg:flex">
           <Logo />
-          <Link href={destination} className={buttonStyles({ variant: 'tertiary', size: 'medium' })}>
+          <Link to="/" href={destination} className={buttonStyles({ variant: 'tertiary', size: 'medium' })}>
             <ArrowLeft aria-hidden size={16} />
             {context.kind === 'listing' ? authCopy.backToReport : authCopy.back}
           </Link>

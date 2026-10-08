@@ -19,7 +19,7 @@ const username = z
           .string()
           .min(3, invalid.usernameTooShort)
           .max(30, invalid.usernameTooLong)
-          .regex(/^[\p{L}\p{N}_.]+$/u, invalid.usernameCharacters),
+          .regex(/^[\p{L}\p{Nd}_.]+$/u, invalid.usernameCharacters),
       ),
   )
 

@@ -1,8 +1,8 @@
 import { Link } from '@tanstack/react-router'
 
-import { Avatar } from '#/components/ui/avatar'
 import { buttonStyles } from '#/components/ui/button-styles'
 import { Logo } from '#/components/ui/logo'
+import { AccountMenu } from '#/features/home/account-menu'
 import { CheckForm } from '#/features/home/check-form'
 import { homeCopy } from '#/features/home/copy'
 import { GuestWatchlist } from '#/features/home/guest-watchlist'
@@ -16,9 +16,10 @@ type HomeScreenProps = {
   onRetry: () => void
   /** Rejects when the listing couldn't be removed. */
   onUntrack: (listingId: string) => Promise<void>
+  onSignOut: () => void
 }
 
-function AccountControls({ home }: { home: HomeResult }) {
+function AccountControls({ home, onSignOut }: Pick<HomeScreenProps, 'home' | 'onSignOut'>) {
   if (home.kind === 'guest') {
     return (
       <Link
@@ -30,7 +31,7 @@ function AccountControls({ home }: { home: HomeResult }) {
       </Link>
     )
   }
-  return home.viewer && <Avatar initials={home.viewer.initials} label={homeCopy.account.label} />
+  return home.viewer && <AccountMenu viewer={home.viewer} onSignOut={onSignOut} />
 }
 
 function WatchlistSection({ home, onRetry, onUntrack }: HomeScreenProps) {
@@ -60,7 +61,7 @@ export function HomeScreen(props: HomeScreenProps) {
         <div className="md:hidden">
           <Logo />
         </div>
-        <AccountControls home={home} />
+        <AccountControls home={home} onSignOut={props.onSignOut} />
       </header>
       <div className="flex w-full max-w-180 flex-col gap-10 md:gap-12">
         <section className="flex flex-col gap-6">
