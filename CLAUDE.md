@@ -28,12 +28,29 @@ Figma: https://www.figma.com/design/yYrUqxBmK1rH5djf9hvIF4/SHAKER (landing page 
 | --- | --- |
 | App framework | [TanStack Start](https://tanstack.com/start) (React, TanStack Router, server functions), TypeScript |
 | Hosting | Vercel (TanStack Start builds through the `nitro/vite` plugin) |
-| Database | Neon serverless Postgres |
+| Database | Neon serverless Postgres (region `aws-eu-central-1`), Prisma 7 ORM through `@prisma/adapter-neon` (see `docs/adr/0001-prisma-orm.md`) |
 | Auth | Neon Auth (managed Better Auth, beta), only where an account is actually needed. Users live in the `neon_auth` schema of our own database |
 | Asset storage | Neon Object Storage buckets (S3-compatible, beta), branch together with the database |
 | Lint / format | ESLint + Prettier, see `docs/research/eslint-prettier-tanstack-start.md` |
 
-The landing page and the web app are both TanStack Start. Whether they ship as one app (landing as public, prerendered routes) or two is not decided yet; record that decision as an ADR in `docs/adr/` when it's made. Nothing is scaffolded yet, so update this file with the real commands (dev, build, lint, typecheck, test) once `package.json` exists.
+The landing page and the web app are both TanStack Start. The scaffold is one app at the repo root; whether the landing page stays in it (as public, prerendered routes) or splits out is not decided yet. Record that decision as an ADR in `docs/adr/` when it's made.
+
+Neon infrastructure (Auth, the `assets` bucket) is declared in `neon.ts` and applied with `neon deploy`. The repo is linked to Neon project `shaker-app` (`curly-river-27382655`), branch `production`; `neon link`/`neon deploy` write the branch's variables to `.env.local`. `NEON_AUTH_COOKIE_SECRET` is ours, not Neon's: generate it with `openssl rand -base64 32`.
+
+## Commands
+
+| Task | Command |
+| --- | --- |
+| Install | `pnpm install` (runs `prisma generate`) |
+| Dev server | `pnpm dev` (http://localhost:3000) |
+| Build | `pnpm build` |
+| Typecheck | `pnpm typecheck` |
+| Prisma client | `pnpm db:generate` |
+| New migration (dev branch only) | `pnpm db:migrate` |
+| Apply migrations | `pnpm db:deploy` |
+| Health check | `curl localhost:3000/api/health` (database, storage, auth) |
+
+Lint, format and tests are not set up yet; follow `docs/research/eslint-prettier-tanstack-start.md` when adding them.
 
 ## Coding standards
 
@@ -45,7 +62,10 @@ The landing page and the web app are both TanStack Start. Whether they ship as o
 - `DESIGN.md`: design system; `.impeccable/design.json` is its machine-readable sidecar
 - `CODING_STANDARDS.md`: how code in this repo is written
 - `docs/research/`: research notes with cited primary sources
-- `docs/adr/`: architecture decisions (created when the first one is made)
+- `docs/adr/`: architecture decisions
+- `neon.ts`: Neon infrastructure as code (Auth, buckets)
+- `prisma/`: Prisma schema and migrations; the client is generated into `src/generated/prisma` (gitignored)
+- `src/lib/`: server-only infrastructure (`env.server.ts`, `db.server.ts`, `storage.server.ts`, `auth/`)
 - `docs/agents/`: how agent skills use the issue tracker, labels and domain docs
 
 ## Agent skills

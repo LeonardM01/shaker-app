@@ -4,7 +4,7 @@ Research date: **2026-10-08**. Every version number below comes from the npm reg
 
 > **Stack changes since this was written (2026-10-08):**
 > - Auth moved from Clerk to Neon Auth. The Clerk notes below no longer apply; no Neon lint plugin exists.
-> - No ORM has been chosen. The `eslint-plugin-drizzle` lines (install, config, ignores) apply only if Drizzle is picked, and that choice needs an ADR. Leave them out until then.
+> - The ORM is Prisma (`docs/adr/0001-prisma-orm.md`), not Drizzle. Leave out the `eslint-plugin-drizzle` lines (install, config, ignores), and add `src/generated/**` (the Prisma client) to the global ignores.
 
 Method: I read official docs (eslint.org, typescript-eslint.io, prettier.io, tanstack.com, react.dev, typescriptlang.org, devblogs.microsoft.com, biomejs.dev, oxc.rs, pnpm.io, vite.dev). I also downloaded the published npm tarballs with `npm pack` (no install) and read their source. That is how rule names, preset contents, and peer ranges were checked. **None of the configs below have been executed** (the brief did not allow installs). Run them once and fix anything that breaks before relying on them.
 
