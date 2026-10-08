@@ -5,12 +5,12 @@
 
 ## Context
 
-The report's "Prodavač i recenzije" section mixes marketplace profile facts (member since, response time, phone verified), Shaker reviews, and "Isti profil na Njuškalu i Facebooku". Linking accounts across marketplaces automatically would mean matching phone numbers, names or profile photos: personal-data processing under GDPR, and false links would move one seller's reviews onto another (against "fair to both sides").
+The report's "Prodavač i recenzije" section mixes marketplace profile facts (member since, response time, phone verified), Vrijedi.Ly reviews, and "Isti profil na Njuškalu i Facebooku". Linking accounts across marketplaces automatically would mean matching phone numbers, names or profile photos: personal-data processing under GDPR, and false links would move one seller's reviews onto another (against "fair to both sides").
 
 ## Decision
 
 - A **seller** is one marketplace account, keyed by `(marketplace, externalSellerId)`. The "Prodavač i recenzije" check step scrapes its profile through Steel. The report shows only facts the marketplace actually publishes; rows such as "126 prodanih oglasa" are dropped unless a marketplace shows them.
-- Shaker reviews attach to the seller and record the listing they are about.
+- Vrijedi.Ly reviews attach to the seller and record the listing they are about.
 - No automatic cross-platform linking. "Isti profil na …" appears only when the seller has claimed both accounts.
 - **Claiming (MVP):** a signed-in user presses a button on the report (right rail) to claim the listing, which claims its seller account. The claim is treated as verified: no ownership proof, no "unverified" labels, no limits. Proof (e.g. a code in a listing description) comes after the MVP.
 

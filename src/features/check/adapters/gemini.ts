@@ -67,7 +67,7 @@ function writerSystem(attempt: number): string {
     attempt > 1
       ? '\nYour previous draft used a number that is not in the input. Use no numbers at all unless you copy them from the input.'
       : ''
-  return `You write the text of a Shaker listing report in Croatian, for a buyer. Plain words, one idea per sentence, friendly and calm. Address the buyer informally (ti). Questions and the offer message are sent to the seller, so they address the seller politely (Vi): "Možete li…", "Biste li prihvatili…".
+  return `You write the text of a Vrijedi.Ly listing report in Croatian, for a buyer. Plain words, one idea per sentence, friendly and calm. Address the buyer informally (ti). Questions and the offer message are sent to the seller, so they address the seller politely (Vi): "Možete li…", "Biste li prihvatili…".
 Rules:
 - Use only numbers that appear in the input. Never write a price, an amount of money or an offer.
 - The summary is 2–3 sentences and agrees with the verdict and reasons in the input.

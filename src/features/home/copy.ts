@@ -4,6 +4,7 @@
 import type { RiskEvidence, UpdateBanner } from '#/features/home/home-result'
 import type { Marketplace } from '#/lib/listing'
 import { formatPrice, formatPriceDelta } from '#/lib/format'
+import { pageTitle } from '#/components/ui/copy'
 
 export const marketplaceNames: Record<Marketplace, string> = {
   njuskalo: 'Njuškalo',
@@ -31,7 +32,7 @@ function duplicatePhotoLine(count: number): string {
 }
 
 export const homeCopy = {
-  pageTitle: 'Početna · Shaker',
+  pageTitle: pageTitle('Početna'),
   heading: 'Provjeri oglas',
   intro:
     'Zalijepi link s Njuškala, Facebook Marketplacea ili Index oglasa. Za 5–10 sekundi znaš je li cijena fer, što nedostaje i kome plaćaš.',

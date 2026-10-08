@@ -20,7 +20,7 @@ function StatTile({ value, label }: { value: string; label: string }) {
   )
 }
 
-/** DESIGN.md Seller Card: only what the marketplace publishes, plus Shaker reviews. */
+/** DESIGN.md Seller Card: only what the marketplace publishes, plus Vrijedi.Ly reviews. */
 function SellerCard({ seller }: { seller: SellerData }) {
   const year = seller.memberSince ? new Date(seller.memberSince).getUTCFullYear() : null
   const facts = seller.facts.map(copy.fact)
@@ -93,7 +93,7 @@ function SellerCard({ seller }: { seller: SellerData }) {
   )
 }
 
-/** Prodavač i recenzije: the seller card, Shaker reviews with replies, and the review form. */
+/** Prodavač i recenzije: the seller card, Vrijedi.Ly reviews with replies, and the review form. */
 export function SellerSection({
   report,
   onWriteReview,

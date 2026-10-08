@@ -1,4 +1,4 @@
-// Ocjena ponude (ADR 0005): the seller's Shaker reviews, combined with price
+// Ocjena ponude (ADR 0005): the seller's Vrijedi.Ly reviews, combined with price
 // fairness when there are comparables. Plain arithmetic, no model.
 
 import { minComparables } from '#/features/check/scoring/price'
@@ -29,7 +29,7 @@ export type OfferScore =
 
 export const offerScoreRules = {
   minReviews: 5,
-  /** The prior before Shaker has any real reviews. */
+  /** The prior before Vrijedi.Ly has any real reviews. */
   defaultPlatformAverageStars: 4,
   /** How many platform-average reviews the Bayesian average starts from. */
   reviewPriorWeight: 5,

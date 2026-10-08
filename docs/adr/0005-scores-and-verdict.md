@@ -5,7 +5,7 @@
 
 ## Context
 
-The report shows two scores (Ocjena ponude, Kvaliteta oglasa), a price verdict badge and a suggested offer. Scores must be explainable and reproducible, must treat missing data as unknown (gray), and must be fair to sellers. At launch almost no seller has Shaker reviews and many items have few comparables.
+The report shows two scores (Ocjena ponude, Kvaliteta oglasa), a price verdict badge and a suggested offer. Scores must be explainable and reproducible, must treat missing data as unknown (gray), and must be fair to sellers. At launch almost no seller has Vrijedi.Ly reviews and many items have few comparables.
 
 TypeSafe Jev (https://docs.typesafe.ai, read 2026-10-08) returns typed answers (Choice, Score on a 2–10 level rubric, Noul 0–1) with probabilities and `confidence`. It is text only, English-first, $0.042 per 1M input tokens, and does not document determinism. Its docs recommend atomic questions combined by your own code.
 

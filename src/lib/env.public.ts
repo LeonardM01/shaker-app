@@ -3,7 +3,7 @@ import { z } from 'zod'
 // Build-time `VITE_*` variables, safe for the browser bundle. The only reader
 // of `import.meta.env`; server secrets go through env.server.ts.
 const publicEnvSchema = z.object({
-  /** "Shaker u Chromeu" links here; the card is hidden while it's unset. */
+  /** "Vrijedi.Ly u Chromeu" links here; the card is hidden while it's unset. */
   VITE_CHROME_WEB_STORE_URL: z
     .union([z.literal(''), z.url()])
     .optional()

@@ -112,13 +112,14 @@ export function ReviewCard({
         >
           {initialsOf(review.reviewerName)}
         </span>
-        <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+        <div className="flex min-w-0 flex-1 flex-col gap-1">
           <p className="truncate text-title">{review.reviewerName}</p>
-          <p className="text-caption text-text-tertiary">{formatDate(review.createdAt)}</p>
-        </div>
-        <div className="flex shrink-0 gap-1">
-          {review.isDemo && <Tag>{copy.demo}</Tag>}
-          <Tag>{marketplaceTags[review.marketplace]}</Tag>
+          {/* Date and tags share one line and wrap together, so the tags never squeeze the name. */}
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <p className="whitespace-nowrap text-caption text-text-tertiary">{formatDate(review.createdAt)}</p>
+            {review.isDemo && <Tag>{copy.demo}</Tag>}
+            <Tag>{marketplaceTags[review.marketplace]}</Tag>
+          </div>
         </div>
       </div>
       <div className="flex flex-wrap items-center gap-2">
