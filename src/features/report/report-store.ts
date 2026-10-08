@@ -69,6 +69,9 @@ export type StoredReviewView = {
   reply: { text: string; createdAt: Date } | null
 }
 
+/** Where a page of reviews ended: the last review's time and ID. */
+export type ReviewCursor = { createdAt: Date; id: string }
+
 export type ProgressSnapshot = {
   checkId: string
   canonicalUrl: string
@@ -99,8 +102,15 @@ export type ReportStore = {
   getSeller: (sellerId: string) => Promise<ReportSeller | null>
   /** Other sellers claimed by the same user. */
   listSellersClaimedBy: (userId: string) => Promise<{ id: string; marketplace: Marketplace }[]>
-  /** Real reviews only, unless `includeDemo` (labelled demo listings). Newest first. */
-  listReviews: (sellerId: string, options: { includeDemo: boolean; limit: number }) => Promise<StoredReviewView[]>
+  /**
+   * Real reviews only, unless `includeDemo` (labelled demo listings). Newest
+   * first, by `createdAt` to the millisecond and then `id`; `before` continues
+   * after that review.
+   */
+  listReviews: (
+    sellerId: string,
+    options: { includeDemo: boolean; limit: number; before?: ReviewCursor },
+  ) => Promise<StoredReviewView[]>
   /** Real reviews of the seller; demo reviews never count. */
   reviewStats: (sellerId: string) => Promise<{ count: number; averageStars: number }>
   hasReviewed: (userId: string, sellerId: string) => Promise<boolean>
@@ -111,13 +121,18 @@ export type ReportStore = {
   untrack: (userId: string, listingId: string) => Promise<void>
   /** Creates the claim unless the seller has one. Returns the claiming user. */
   claimSeller: (userId: string, sellerId: string) => Promise<{ claimedBy: string }>
-  /** Null when this user already reviewed this seller. */
+  /**
+   * Null when this user already reviewed this seller. Extension reviews all
+   * belong to the anonymous user and carry an install ID, so the rule is one
+   * per seller per install for them (ADR 0014).
+   */
   createReview: (review: {
     userId: string
     sellerId: string
     listingId: string
     stars: number
     text: string
+    installId?: string
   }) => Promise<{ id: string } | null>
   getReview: (reviewId: string) => Promise<{ id: string; sellerId: string; userId: string; hasReply: boolean } | null>
   /** False when the review already has a reply. */

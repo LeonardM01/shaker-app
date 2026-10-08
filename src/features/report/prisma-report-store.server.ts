@@ -226,7 +226,12 @@ export function createPrismaReportStore(db: PrismaClient): ReportStore {
       return claims.map((claim) => claim.seller)
     },
 
-    async listReviews(sellerId, { includeDemo, limit }) {
+    async listReviews(sellerId, { includeDemo, limit, before }) {
+      // Postgres keeps microseconds and a cursor only milliseconds, so both the
+      // order and the cursor compare the time truncated to milliseconds.
+      const after = before
+        ? Prisma.sql`AND (date_trunc('milliseconds', r.created_at), r.id) < (${before.createdAt}, ${before.id}::uuid)`
+        : Prisma.empty
       // Reviewer names are read from neon_auth, never copied into our tables.
       const rows = await db.$queryRaw<ReviewSqlRow[]>`
         SELECT r.id, r.user_id, u.name AS reviewer_name, r.created_at, r.stars, r.text,
@@ -239,7 +244,8 @@ export function createPrismaReportStore(db: PrismaClient): ReportStore {
         LEFT JOIN neon_auth."user" u ON u.id::text = r.user_id
         WHERE r.seller_id = ${sellerId}::uuid
           AND (${includeDemo} OR NOT r.is_demo)
-        ORDER BY r.created_at DESC
+          ${after}
+        ORDER BY date_trunc('milliseconds', r.created_at) DESC, r.id DESC
         LIMIT ${limit}`
       return rows.map(
         (row): StoredReviewView => ({

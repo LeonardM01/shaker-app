@@ -18,7 +18,11 @@ Domain terms used in code, issues and docs. Croatian UI words are in parentheses
 
 **Scam pattern** (obrazac prijevare). One entry of the fixed catalogue in ADR 0010, with a strength (strong, medium, weak). A pattern that fires carries its evidence. Avoid: red flag, fraud score.
 
-**Review** (recenzija). A signed-in user's rating of a seller, about one listing. One per seller per user.
+**Review** (recenzija). A user's rating of a seller, about one listing. One per seller per user; reviews posted from the extension belong to the shared anonymous user, one per seller per install ID (ADR 0014).
+
+**Install ID.** A random ID the extension generates once per installation. Not an account: it only limits anonymous reviews to one per seller.
+
+**Extension API.** The anonymous JSON endpoints under `/api/extension/v1/` the browser extension calls (ADR 0013). Returns the web report's data in the web report's terms. Avoid: insights (the extension's old demo name).
 
 **Potvrđena kupnja** (verified purchase). A review whose purchase has been proven. Placeholder for now: always false on real reviews until we have a way to prove purchases.
 

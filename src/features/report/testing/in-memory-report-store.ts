@@ -143,11 +143,14 @@ export class InMemoryReportStore extends InMemoryCheckStore implements ReportSto
       }),
     )
 
-  listReviews = (sellerId: string, { includeDemo, limit }: { includeDemo: boolean; limit: number }) =>
-    Promise.resolve(
+  listReviews: ReportStore['listReviews'] = (sellerId, { includeDemo, limit, before }) => {
+    const newestFirst = (a: { createdAt: Date; id: string }, b: { createdAt: Date; id: string }) =>
+      b.createdAt.getTime() - a.createdAt.getTime() || (b.id < a.id ? -1 : b.id > a.id ? 1 : 0)
+    return Promise.resolve(
       this.reviews
         .filter((review) => review.sellerId === sellerId && (includeDemo || !review.isDemo))
-        .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+        .filter((review) => !before || newestFirst(before, review) < 0)
+        .sort(newestFirst)
         .slice(0, limit)
         .map((review): StoredReviewView => {
           const reply = this.replies.find((candidate) => candidate.reviewId === review.id)
@@ -168,6 +171,7 @@ export class InMemoryReportStore extends InMemoryCheckStore implements ReportSto
           }
         }),
     )
+  }
 
   listTrackedForRecheck = () =>
     Promise.resolve(
@@ -209,11 +213,15 @@ export class InMemoryReportStore extends InMemoryCheckStore implements ReportSto
     return Promise.resolve({ claimedBy: userId })
   }
 
-  createReview = (input: { userId: string; sellerId: string; listingId: string; stars: number; text: string }) => {
-    if (this.reviews.some((review) => review.userId === input.userId && review.sellerId === input.sellerId)) {
-      return Promise.resolve(null)
-    }
-    const review = this.addReview({ ...input, createdAt: this.now })
+  createReview = ({ installId: given, ...input }: Parameters<ReportStore['createReview']>[0]) => {
+    const installId = given ?? null
+    // The unique (user_id, seller_id, install_id) NULLS NOT DISTINCT of ADR 0014.
+    const taken = this.reviews.some(
+      (review) =>
+        review.userId === input.userId && review.sellerId === input.sellerId && review.installId === installId,
+    )
+    if (taken) return Promise.resolve(null)
+    const review = this.addReview({ ...input, installId, createdAt: this.now })
     return Promise.resolve({ id: review.id })
   }
 

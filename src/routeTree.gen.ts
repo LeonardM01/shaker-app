@@ -24,6 +24,11 @@ import { Route as ApiCronPhotoRetentionRouteImport } from './routes/api/cron/pho
 import { Route as ApiCronRecheckRouteImport } from './routes/api/cron/recheck'
 import { Route as AppChecksCheckIdRouteImport } from './routes/app/checks.$checkId'
 import { Route as AppListingListingIdRouteImport } from './routes/app/listing.$listingId'
+import { Route as ApiExtensionV1MessageChecksRouteImport } from './routes/api/extension/v1/message-checks'
+import { Route as ApiExtensionV1ReviewsRouteImport } from './routes/api/extension/v1/reviews'
+import { Route as ApiExtensionV1ChecksIndexRouteImport } from './routes/api/extension/v1/checks/index'
+import { Route as ApiExtensionV1ChecksCheckIdRouteImport } from './routes/api/extension/v1/checks/$checkId'
+import { Route as ApiExtensionV1SellersSellerIdReviewsRouteImport } from './routes/api/extension/v1/sellers/$sellerId/reviews'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -100,6 +105,35 @@ const AppListingListingIdRoute = AppListingListingIdRouteImport.update({
   path: '/listing/$listingId',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const ApiExtensionV1MessageChecksRoute =
+  ApiExtensionV1MessageChecksRouteImport.update({
+    id: '/api/extension/v1/message-checks',
+    path: '/api/extension/v1/message-checks',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiExtensionV1ReviewsRoute = ApiExtensionV1ReviewsRouteImport.update({
+  id: '/api/extension/v1/reviews',
+  path: '/api/extension/v1/reviews',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiExtensionV1ChecksIndexRoute =
+  ApiExtensionV1ChecksIndexRouteImport.update({
+    id: '/api/extension/v1/checks/',
+    path: '/api/extension/v1/checks/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiExtensionV1ChecksCheckIdRoute =
+  ApiExtensionV1ChecksCheckIdRouteImport.update({
+    id: '/api/extension/v1/checks/$checkId',
+    path: '/api/extension/v1/checks/$checkId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiExtensionV1SellersSellerIdReviewsRoute =
+  ApiExtensionV1SellersSellerIdReviewsRouteImport.update({
+    id: '/api/extension/v1/sellers/$sellerId/reviews',
+    path: '/api/extension/v1/sellers/$sellerId/reviews',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -117,6 +151,11 @@ export interface FileRoutesByFullPath {
   '/api/cron/recheck': typeof ApiCronRecheckRoute
   '/app/checks/$checkId': typeof AppChecksCheckIdRoute
   '/app/listing/$listingId': typeof AppListingListingIdRoute
+  '/api/extension/v1/message-checks': typeof ApiExtensionV1MessageChecksRoute
+  '/api/extension/v1/reviews': typeof ApiExtensionV1ReviewsRoute
+  '/api/extension/v1/checks/$checkId': typeof ApiExtensionV1ChecksCheckIdRoute
+  '/api/extension/v1/checks/': typeof ApiExtensionV1ChecksIndexRoute
+  '/api/extension/v1/sellers/$sellerId/reviews': typeof ApiExtensionV1SellersSellerIdReviewsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -133,6 +172,11 @@ export interface FileRoutesByTo {
   '/api/cron/recheck': typeof ApiCronRecheckRoute
   '/app/checks/$checkId': typeof AppChecksCheckIdRoute
   '/app/listing/$listingId': typeof AppListingListingIdRoute
+  '/api/extension/v1/message-checks': typeof ApiExtensionV1MessageChecksRoute
+  '/api/extension/v1/reviews': typeof ApiExtensionV1ReviewsRoute
+  '/api/extension/v1/checks/$checkId': typeof ApiExtensionV1ChecksCheckIdRoute
+  '/api/extension/v1/checks': typeof ApiExtensionV1ChecksIndexRoute
+  '/api/extension/v1/sellers/$sellerId/reviews': typeof ApiExtensionV1SellersSellerIdReviewsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -151,6 +195,11 @@ export interface FileRoutesById {
   '/api/cron/recheck': typeof ApiCronRecheckRoute
   '/app/checks/$checkId': typeof AppChecksCheckIdRoute
   '/app/listing/$listingId': typeof AppListingListingIdRoute
+  '/api/extension/v1/message-checks': typeof ApiExtensionV1MessageChecksRoute
+  '/api/extension/v1/reviews': typeof ApiExtensionV1ReviewsRoute
+  '/api/extension/v1/checks/$checkId': typeof ApiExtensionV1ChecksCheckIdRoute
+  '/api/extension/v1/checks/': typeof ApiExtensionV1ChecksIndexRoute
+  '/api/extension/v1/sellers/$sellerId/reviews': typeof ApiExtensionV1SellersSellerIdReviewsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -170,6 +219,11 @@ export interface FileRouteTypes {
     | '/api/cron/recheck'
     | '/app/checks/$checkId'
     | '/app/listing/$listingId'
+    | '/api/extension/v1/message-checks'
+    | '/api/extension/v1/reviews'
+    | '/api/extension/v1/checks/$checkId'
+    | '/api/extension/v1/checks/'
+    | '/api/extension/v1/sellers/$sellerId/reviews'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -186,6 +240,11 @@ export interface FileRouteTypes {
     | '/api/cron/recheck'
     | '/app/checks/$checkId'
     | '/app/listing/$listingId'
+    | '/api/extension/v1/message-checks'
+    | '/api/extension/v1/reviews'
+    | '/api/extension/v1/checks/$checkId'
+    | '/api/extension/v1/checks'
+    | '/api/extension/v1/sellers/$sellerId/reviews'
   id:
     | '__root__'
     | '/'
@@ -203,6 +262,11 @@ export interface FileRouteTypes {
     | '/api/cron/recheck'
     | '/app/checks/$checkId'
     | '/app/listing/$listingId'
+    | '/api/extension/v1/message-checks'
+    | '/api/extension/v1/reviews'
+    | '/api/extension/v1/checks/$checkId'
+    | '/api/extension/v1/checks/'
+    | '/api/extension/v1/sellers/$sellerId/reviews'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -217,6 +281,11 @@ export interface RootRouteChildren {
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiCronPhotoRetentionRoute: typeof ApiCronPhotoRetentionRoute
   ApiCronRecheckRoute: typeof ApiCronRecheckRoute
+  ApiExtensionV1MessageChecksRoute: typeof ApiExtensionV1MessageChecksRoute
+  ApiExtensionV1ReviewsRoute: typeof ApiExtensionV1ReviewsRoute
+  ApiExtensionV1ChecksCheckIdRoute: typeof ApiExtensionV1ChecksCheckIdRoute
+  ApiExtensionV1ChecksIndexRoute: typeof ApiExtensionV1ChecksIndexRoute
+  ApiExtensionV1SellersSellerIdReviewsRoute: typeof ApiExtensionV1SellersSellerIdReviewsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -326,6 +395,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppListingListingIdRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/api/extension/v1/message-checks': {
+      id: '/api/extension/v1/message-checks'
+      path: '/api/extension/v1/message-checks'
+      fullPath: '/api/extension/v1/message-checks'
+      preLoaderRoute: typeof ApiExtensionV1MessageChecksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/extension/v1/reviews': {
+      id: '/api/extension/v1/reviews'
+      path: '/api/extension/v1/reviews'
+      fullPath: '/api/extension/v1/reviews'
+      preLoaderRoute: typeof ApiExtensionV1ReviewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/extension/v1/checks/': {
+      id: '/api/extension/v1/checks/'
+      path: '/api/extension/v1/checks'
+      fullPath: '/api/extension/v1/checks/'
+      preLoaderRoute: typeof ApiExtensionV1ChecksIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/extension/v1/checks/$checkId': {
+      id: '/api/extension/v1/checks/$checkId'
+      path: '/api/extension/v1/checks/$checkId'
+      fullPath: '/api/extension/v1/checks/$checkId'
+      preLoaderRoute: typeof ApiExtensionV1ChecksCheckIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/extension/v1/sellers/$sellerId/reviews': {
+      id: '/api/extension/v1/sellers/$sellerId/reviews'
+      path: '/api/extension/v1/sellers/$sellerId/reviews'
+      fullPath: '/api/extension/v1/sellers/$sellerId/reviews'
+      preLoaderRoute: typeof ApiExtensionV1SellersSellerIdReviewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -359,17 +463,13 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiCronPhotoRetentionRoute: ApiCronPhotoRetentionRoute,
   ApiCronRecheckRoute: ApiCronRecheckRoute,
+  ApiExtensionV1MessageChecksRoute: ApiExtensionV1MessageChecksRoute,
+  ApiExtensionV1ReviewsRoute: ApiExtensionV1ReviewsRoute,
+  ApiExtensionV1ChecksCheckIdRoute: ApiExtensionV1ChecksCheckIdRoute,
+  ApiExtensionV1ChecksIndexRoute: ApiExtensionV1ChecksIndexRoute,
+  ApiExtensionV1SellersSellerIdReviewsRoute:
+    ApiExtensionV1SellersSellerIdReviewsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
