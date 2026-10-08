@@ -82,3 +82,69 @@ Open question before approving item 4. On the price-change delta pill, `bg/warni
 ## Logged-out states and auth (2026-10-08)
 
 User request: logged-out visitors can run unlimited checks; three areas tease then lock, leading to sign-up: the home watchlist, the report's suggested offer + message rail, and "Najsličniji oglasi" beyond the first row. Lock style (user-chosen): tease, then lock. Show the saving ("Možeš uštedjeti oko 50 €"), blur a placeholder ("000 €", generic message), never the real offer; an elevated sign-up card sits over ghost/blurred content. Nothing locked may leak elsewhere on the page (summary text and verdict detail must not name the offer). Sign-in methods (user-chosen): Google + email one-time code, no password. Auth page: one form column (heading, Google, "ili", e-mail input, Nastavi, legal links, sign-in/sign-up toggle) beside a sand context panel showing the listing the visitor came from and the three things the account unlocks; after auth the visitor returns to that report. Frames: Desktop · Početna · gost, Desktop · Izvještaj oglasa · gost, Desktop · Registracija, Desktop · Prijava, Desktop · Prijava · kod, Mobile · Početna · gost, Mobile · Izvještaj oglasa · gost, Mobile · Registracija. Dev note: locked values must not be sent to the client; the blur is over placeholder content.
+
+### Logged-out and auth (documentation)
+
+Pass: documenter, 2026-10-08. Ordinary extension of the incumbent Shaker system: every new pattern is assembled from existing tokens and components. **DESIGN.md, `.impeccable/design.json` and PRODUCT.md were not modified.** The candidates below are waiting for user approval and have not been applied.
+
+#### Evidence checked
+- `reference/document.md`, `DESIGN.md` (frontmatter and body), PRODUCT.md (stack line: Neon Auth), and this brief's direction contract and "Logged-out states and auth" request.
+- Captures in `.impeccable/review/app-guest/`. Opened on this pass: desktop-home-guest, desktop-report-guest, desktop-signup, desktop-code, mobile-home-guest, mobile-report-guest, mobile-code. Not opened: desktop-signin, mobile-signin, mobile-signup. Their layout is reported to match the signup/code pair.
+- Frames as reported by the builder. Desktop: 73:1660, 73:1851, 74:1979, 74:2078, 74:2171. Mobile: 74:2314, 74:2468, 74:2263, 75:2371, 75:2418. The brief's frame list above omits Mobile · Prijava (75:2371) and Mobile · Prijava · kod (75:2418); both exist.
+- Finish review: the disposition fix produced 6 material fixes. The verdict pass found 5 resolved and 1 partial (mobile blur), which was then corrected by raising the blur from 7 to 12. **mobile-home-guest.png predates that fix:** in it, the placeholder titles ("PlayStation 5 + 2 kontrolera", "Kauč na razvlačenje, sivi") are still legible. The corrected frame was not recaptured, so this pass has not verified it visually.
+
+#### What matches the incumbent
+- **One Primary per view.**
+  - Guest home: the only Primary is "Provjeri".
+  - Guest report: the only Primary is the rail's "Napravi račun i kopiraj" (the mobile sticky footer on mobile).
+  - Auth: the only Primary is "Nastavi" or "Potvrdi".
+  - The sign-up actions in the lock cards and the top bar are Secondary.
+- **Secondary placement.** Secondary sits on paper or `bg/elevated` (the top bar, "Nastavi s Googleom", the lock card buttons), never directly on `bg/neutral`. Where the surface is sand (the rail), the build uses Primary. No conflict with the Secondary-on-neutral rule was observed.
+- **Verdicts.** The guest report keeps the verdict badge ("Prostor za pregovor"), the score ledger, the Insufficient-safe price bar and the evidence-adjacent red. Locking does not change any verdict meaning.
+- **Lock icons.** lock and mail are Lucide at a 2px stroke.
+- **Inputs.** The e-mail field is the DS Input (48px, 12px radius, label above, helper text below).
+- **Radii.** Cards use 24px, list rows 16px and the context panel 32px.
+- **Locked values.** Only placeholder values ("000 €", generic message) are blurred, never the real offer. The saving stays readable. The summary text does not name the offer.
+
+#### Candidate DS additions (awaiting user approval, not applied)
+1. **Icons:**
+   - lock and mail (Lucide).
+   - google, the official multicolour G. It is a third-party brand mark, so it should be recorded as an explicit exception to "colored via `icon/*` tokens": it is not recolourable and is not Lucide.
+2. **Sign-up prompt (lock card).** `bg/elevated`, Overlay shadow, 24px radius, centred `bg/brand-subtle` icon circle, Title, body, Secondary "Napravi račun", and the link "Već imaš račun? Prijavi se" in `text/brand`. It floats over a layer-blurred preview of placeholder rows.
+3. **Compact lock card.** A horizontal variant (icon, title + one line, Secondary at the end) for list continuations, e.g. "Još 22 usporediva oglasa" under the first row of "Najsličniji oglasi".
+4. **Rail lock (locked haggle helper).** The incumbent Haggle helper on `bg/sand` with these changes:
+   - The saving stays visible in `text/positive`.
+   - The Price XL value is a blurred "000 €" placeholder, and the message is a blurred generic placeholder.
+   - The lock line explains what an account unlocks.
+   - Primary "Napravi račun i kopiraj" carries the lock icon.
+   - On mobile it becomes the sticky footer.
+5. **Guest top bar.** Secondary "Prijavi se" at top right, replacing account controls.
+6. **Auth layout.**
+   - Desktop has a 400px form column: H1, subtitle, Secondary "Nastavi s Googleom", the "ili" divider, the DS Input with the mail icon and helper text, Primary "Nastavi", legal links underlined in `text/brand`, and a sign-in/sign-up toggle. Beside it sits a 600px `bg/sand` context panel at 32px radius, holding the source listing card (white, 24px, with a locked "Predložena ponuda" row on `bg/neutral` showing the blurred placeholder) and three benefits with white icon circles.
+   - On mobile the context collapses to a compact sand card above the form.
+7. **OTP step.**
+   - Six digit boxes, 64px desktop and 56px mobile, at the input radius.
+   - The focused box uses a 2px `border/focus` stroke.
+   - Primary "Potvrdi" stays disabled until all six digits are entered.
+   - Below the button sit the resend countdown line and a Tertiary "Promijeni e-mail".
+8. **Rule candidate: The Placeholder-Only Blur Rule.** Locked values are never sent to the client. Blur covers placeholder content only, and must be strong enough that the placeholder is unreadable at 2x. Nothing locked may be named elsewhere on the page.
+
+#### Conflicts with DESIGN.md rules (need a decision before recording)
+- **Elevation.** DESIGN.md says shadows exist "only for things that float over a host page". The lock cards use the Overlay shadow inside the web app. Either widen the rule to cover in-app overlays over blurred content, or drop the shadow. Recording candidate 2 or 3 as-is would contradict the current rule.
+- **One Meaning Rule: olive is action only.** The lock card's icon circle uses `bg/brand-subtle` (olive tint) as a decorative fill on a non-interactive icon. It sits next to the action, but it is not the action. Decide whether the brand-subtle tint is allowed for "account/unlock" iconography or should be `bg/neutral`.
+- **One Meaning Rule: verdict colours in the blurred placeholders.** The placeholder watchlist rows behind the home lock card keep verdict-coloured badges (teal, icy, pollen) and pollen delta pills. At blur 12 these read as colour texture: verdict colours used decoratively on fictional data. Consider neutral placeholders.
+- **Sand role.** The auth context panel and the mobile auth context card put `bg/sand` on a non-community, non-haggle surface. This is the same out-of-role use already noted for the "Shaker u Chromeu" promo card. One decision should cover both.
+- **Focus ring.** The OTP focused box uses a 2px `border/focus` stroke *in place of* the border. The incumbent focus treatment is a 2px ring with a 2px offset. That is acceptable for a single-character field, but record it as a deliberate exception or align it with the ring.
+- **Disabled Primary.** The disabled "Potvrdi" (neutral fill, disabled text) is visually close to a Secondary button. DESIGN.md defines no disabled button state, so recording this one would set the rule by accident.
+
+#### Not canonized
+- No kickers or eyebrows, hard offset shadows, glyph icons or system display faces appear in the sampled captures. "Predložena ponuda" and "Predložena ponuda i poruka" label the value directly under them, so they are working labels. They should not be recorded as a style.
+- The demo listing (iPhone 13 Pro) and the placeholder watchlist rows are example content, not system assets.
+
+#### Pre-existing drift (reported, not repaired)
+- **Saving colour.** Do's and Don'ts says to frame savings "in gold". The Haggle helper component says "the saving in positive text". The rail lock follows the component (`text/positive`), so the two incumbent rules still disagree.
+- **Earlier drift still stands.** The drift listed in the first documentation pass is unchanged:
+  - the sidecar is not schemaVersion 2;
+  - "Logo & host mocks" is a non-canonical section;
+  - Beige vs `bg/sand` naming is ambiguous;
+  - Layout has no web-app shell or mobile guidance. The auth split layout (400 + 600) adds another unrecorded web layout to that gap.
