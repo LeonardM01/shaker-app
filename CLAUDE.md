@@ -1,6 +1,6 @@
-# Shaker
+# Vrijedi.Ly
 
-Shaker is a trust and price layer for Croatian second-hand marketplaces: Njuškalo, Facebook Marketplace, Index oglasi and Vinted. For any listing ("oglas") it answers the questions a buyer asks before paying: is the price fair, who is the seller, what do other people say, can I haggle, and does this message look like a scam. Sellers get a fair side too: reviews they can reply to and suggestions for their own listings.
+Vrijedi.Ly is a trust and price layer for Croatian second-hand marketplaces: Njuškalo, Facebook Marketplace, Index oglasi and Vinted. For any listing ("oglas") it answers the questions a buyer asks before paying: is the price fair, who is the seller, what do other people say, can I haggle, and does this message look like a scam. Sellers get a fair side too: reviews they can reply to and suggestions for their own listings.
 
 Read `PRODUCT.md` for users, positioning and brand commitments, and `DESIGN.md` for the design system (tokens, components, rules). Both are the source of truth; don't restate or contradict them in code.
 
@@ -8,7 +8,7 @@ Read `PRODUCT.md` for users, positioning and brand commitments, and `DESIGN.md` 
 
 | Surface | What it is | Status |
 | --- | --- | --- |
-| Landing page | Marketing page. One job: install the Chrome extension ("Dodaj u Chrome — besplatno"). Structure is the six buyer questions, each answered by the real Shaker panel on a demo listing. | Designed in Figma, page "Landing" |
+| Landing page | Marketing page. One job: install the Chrome extension ("Dodaj u Chrome — besplatno"). Structure is the six buyer questions, each answered by the real Vrijedi.Ly panel on a demo listing. | Designed in Figma, page "Landing" |
 | Web app | Paste a listing link, watch checks run, read the report (verdict, price range, seller, reviews, questions to ask, suggested offer). Tracked listings form a watchlist. Sellers get "Moji oglasi". | Designed in Figma, page "App" |
 | Browser extension | Overlay badge on listing pages plus a side panel. | Designed; stack not decided |
 

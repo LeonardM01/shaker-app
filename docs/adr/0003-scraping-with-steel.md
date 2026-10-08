@@ -5,7 +5,7 @@
 
 ## Context
 
-Shaker reads Njuškalo, Facebook Marketplace and Index oglasi at launch, both for the listing being checked and for comparable searches (ADR 0002). Probed with plain HTTP from a residential IP on 2026-10-08:
+Vrijedi.Ly reads Njuškalo, Facebook Marketplace and Index oglasi at launch, both for the listing being checked and for comparable searches (ADR 0002). Probed with plain HTTP from a residential IP on 2026-10-08:
 
 - **Njuškalo:** redirected to a Radware ShieldSquare captcha (`validate.perfdrive.com`).
 - **Facebook Marketplace:** logged-out search (`/marketplace/zagreb/search/?query=…`) returns 200 with listing JSON embedded in the HTML (`marketplace_listing_title`, `formatted_amount`, city, photos) when browser-like headers are sent. Without them it returns 400.

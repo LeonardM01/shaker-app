@@ -31,7 +31,7 @@ function duplicatePhotoLine(count: number): string {
 }
 
 export const homeCopy = {
-  pageTitle: 'Početna · Shaker',
+  pageTitle: 'Početna · Vrijedi.Ly',
   heading: 'Provjeri oglas',
   intro:
     'Zalijepi link s Njuškala, Facebook Marketplacea ili Index oglasa. Za 5–10 sekundi znaš je li cijena fer, što nedostaje i kome plaćaš.',

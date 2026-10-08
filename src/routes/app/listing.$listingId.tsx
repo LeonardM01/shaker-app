@@ -25,7 +25,7 @@ export const Route = createFileRoute('/app/listing/$listingId')({
     return { title: report.listing.title }
   },
   head: ({ loaderData }) => ({
-    meta: [{ title: loaderData ? reportCopy.pageTitle(loaderData.title) : 'Shaker' }],
+    meta: [{ title: loaderData ? reportCopy.pageTitle(loaderData.title) : 'Vrijedi.Ly' }],
   }),
   pendingComponent: () => <div aria-busy className="min-h-dvh" />,
   errorComponent: ReportMissing,

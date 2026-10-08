@@ -15,7 +15,7 @@ export const verdictGroupLabel = 'Presuda'
 
 export const shellCopy = {
   skipLink: 'Preskoči na sadržaj',
-  logo: 'Shaker',
+  logo: 'Vrijedi.Ly',
   nav: 'Glavna navigacija',
   home: 'Početna',
   /** Titles of screens that are only navigation targets for now. */
@@ -26,7 +26,7 @@ export const shellCopy = {
   },
   checkStartFailed: 'Provjeru trenutno ne možemo pokrenuti. Pokušaj ponovo za minutu.',
   extension: {
-    title: 'Shaker u Chromeu',
+    title: 'Vrijedi.Ly u Chromeu',
     body: 'Ocjena se pojavi uz cijenu dok listaš Njuškalo.',
     action: 'Dodaj besplatno',
   },

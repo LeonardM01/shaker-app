@@ -7,7 +7,7 @@ related_targets: []
 
 # Web app (Figma page "App", 1440 desktop + 390 mobile)
 
-Scope: the Shaker web app. Mode: Operate. User: a Croatian buyer (or seller) who has a listing link from Njuškalo, Facebook Marketplace or Index oglasi and wants to know, fast, whether it is a good buy, what is missing, whether it smells like a scam, who the seller is, and what to ask. Sellers paste their own listing in "Moji oglasi" and get improvements; buyers never see that view. Task frequency: occasional, bursty (a few listings in one evening while shopping). Constraints: Croatian copy; demo listings are labelled examples; "no data" is gray, red only beside evidence.
+Scope: the Vrijedi.Ly web app. Mode: Operate. User: a Croatian buyer (or seller) who has a listing link from Njuškalo, Facebook Marketplace or Index oglasi and wants to know, fast, whether it is a good buy, what is missing, whether it smells like a scam, who the seller is, and what to ask. Sellers paste their own listing in "Moji oglasi" and get improvements; buyers never see that view. Task frequency: occasional, bursty (a few listings in one evening while shopping). Constraints: Croatian copy; demo listings are labelled examples; "no data" is gray, red only beside evidence.
 
 Screens: Početna (paste + watchlist), Provjera u tijeku (per-check progress), Izvještaj oglasa (buyer report), Moji oglasi (seller improvements), states board (invalid link, unsupported site, removed listing, empty watchlist, partial failure). Mobile: Početna, Izvještaj, Moji oglasi.
 
@@ -22,12 +22,12 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 
 ## Documentation
 
-Pass: documenter, 2026-10-08. Ordinary extension of the incumbent Shaker system, not a new world. **DESIGN.md, `.impeccable/design.json` and PRODUCT.md were not modified.** Everything under "Candidate DS additions" waits for user approval and has not been applied.
+Pass: documenter, 2026-10-08. Ordinary extension of the incumbent Vrijedi.Ly system, not a new world. **DESIGN.md, `.impeccable/design.json` and PRODUCT.md were not modified.** Everything under "Candidate DS additions" waits for user approval and has not been applied.
 
 ### Evidence checked
 - `reference/document.md` (format spec), `DESIGN.md` (frontmatter + body), `.impeccable/design.json`, `PRODUCT.md` (platform line: responsive web, 1440 + 390), this surface's direction contract.
 - Final captures in `.impeccable/review/app/`: desktop-home, desktop-report, desktop-loading, desktop-states, mobile-home, mobile-report (sampled visually). desktop-seller and mobile-seller were not opened on this pass.
-- Build facts reported by the builder: every Shaker fill, stroke, radius and gap is bound to DS variables (`color/bg/*`, `text/*`, `border/*`, `icon/*`, `spacing/*`, `radius/*`). All text uses DS text styles. Components are DS instances (Button, Verdict Badge, Tag, Rating, Avatar, Alert, Price Range Bar, Review Card, Seller Card, Logo, Icons).
+- Build facts reported by the builder: every Vrijedi.Ly fill, stroke, radius and gap is bound to DS variables (`color/bg/*`, `text/*`, `border/*`, `icon/*`, `spacing/*`, `radius/*`). All text uses DS text styles. Components are DS instances (Button, Verdict Badge, Tag, Rating, Avatar, Alert, Price Range Bar, Review Card, Seller Card, Logo, Icons).
 - `.impeccable/assets/app/PROVENANCE.md`: six Wikimedia Commons demo photos with their licences (CC0 / CC BY / CC BY-SA). Two later text-only edits are not in the captures. The captures still show "19 oglasa" (now "16 oglasa") and "od prošle provjere" on mobile (now "od zadnje provjere").
 
 ### Build vs incumbent system
@@ -49,7 +49,7 @@ Where the build diverges (the build wins, recorded here, not written into DESIGN
 - **App shell.** The shell is a 240px sidebar plus a 720px main column. DESIGN.md Layout's "80px gutter at 1440px" does not describe it.
 - **Mobile navigation.** Mobile uses a bottom tab bar (Početna / Praćeni / Moji oglasi / Postavke) instead of the sidebar. DESIGN.md has no mobile nav pattern.
 - **Mobile section tabs.** They are pills with the selected tab filled in ink. Desktop uses a 2px ink underline. The incumbent Segmented Control uses an elevated white pill for the selected item. That gives three treatments for one kind of control, which needs a decision before it is recorded.
-- **"Shaker u Chromeu" promo card.** It sits on `bg/sand`. The incumbent gives beige/sand to community content and the haggle helper, so this use is outside the recorded role.
+- **"Vrijedi.Ly u Chromeu" promo card.** It sits on `bg/sand`. The incumbent gives beige/sand to community content and the haggle helper, so this use is outside the recorded role.
 
 ### Candidate DS additions (awaiting user approval, not applied)
 1. **Icon grid additions (16 Lucide icons).** house, arrow-left, copy, camera, trending-up, list-checks, pencil, bell, refresh-cw, square, square-check, settings, menu, loader-circle, puzzle, file-text. These already sit on the Design System page; they are not recorded in DESIGN.md.
@@ -85,7 +85,7 @@ User request: logged-out visitors can run unlimited checks; three areas tease th
 
 ### Logged-out and auth (documentation)
 
-Pass: documenter, 2026-10-08. Ordinary extension of the incumbent Shaker system: every new pattern is assembled from existing tokens and components. **DESIGN.md, `.impeccable/design.json` and PRODUCT.md were not modified.** The candidates below are waiting for user approval and have not been applied.
+Pass: documenter, 2026-10-08. Ordinary extension of the incumbent Vrijedi.Ly system: every new pattern is assembled from existing tokens and components. **DESIGN.md, `.impeccable/design.json` and PRODUCT.md were not modified.** The candidates below are waiting for user approval and have not been applied.
 
 #### Evidence checked
 - `reference/document.md`, `DESIGN.md` (frontmatter and body), PRODUCT.md (stack line: Neon Auth), and this brief's direction contract and "Logged-out states and auth" request.
@@ -133,7 +133,7 @@ Pass: documenter, 2026-10-08. Ordinary extension of the incumbent Shaker system:
 - **Elevation.** DESIGN.md says shadows exist "only for things that float over a host page". The lock cards use the Overlay shadow inside the web app. Either widen the rule to cover in-app overlays over blurred content, or drop the shadow. Recording candidate 2 or 3 as-is would contradict the current rule.
 - **One Meaning Rule: olive is action only.** The lock card's icon circle uses `bg/brand-subtle` (olive tint) as a decorative fill on a non-interactive icon. It sits next to the action, but it is not the action. Decide whether the brand-subtle tint is allowed for "account/unlock" iconography or should be `bg/neutral`.
 - **One Meaning Rule: verdict colours in the blurred placeholders.** The placeholder watchlist rows behind the home lock card keep verdict-coloured badges (teal, icy, pollen) and pollen delta pills. At blur 12 these read as colour texture: verdict colours used decoratively on fictional data. Consider neutral placeholders.
-- **Sand role.** The auth context panel and the mobile auth context card put `bg/sand` on a non-community, non-haggle surface. This is the same out-of-role use already noted for the "Shaker u Chromeu" promo card. One decision should cover both.
+- **Sand role.** The auth context panel and the mobile auth context card put `bg/sand` on a non-community, non-haggle surface. This is the same out-of-role use already noted for the "Vrijedi.Ly u Chromeu" promo card. One decision should cover both.
 - **Focus ring.** The OTP focused box uses a 2px `border/focus` stroke *in place of* the border. The incumbent focus treatment is a 2px ring with a 2px offset. That is acceptable for a single-character field, but record it as a deliberate exception or align it with the ring.
 - **Disabled Primary.** The disabled "Potvrdi" (neutral fill, disabled text) is visually close to a Secondary button. DESIGN.md defines no disabled button state, so recording this one would set the rule by accident.
 

@@ -24,7 +24,7 @@ export const Route = createFileRoute('/app/check')({
     }
     throw redirect({ to: '/app/checks/$checkId', params: { checkId: started.checkId } })
   },
-  head: () => ({ meta: [{ title: `${shellCopy.pendingScreens.check} · Shaker` }] }),
+  head: () => ({ meta: [{ title: `${shellCopy.pendingScreens.check} · Vrijedi.Ly` }] }),
   pendingComponent: () => <div aria-busy className="min-h-dvh" />,
   errorComponent: CheckStartFailed,
 })

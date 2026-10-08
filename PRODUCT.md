@@ -10,7 +10,7 @@ Surfaces: a browser extension (overlay badges on listing pages plus a side panel
 
 ## Product
 
-Shaker is a trust and price layer for Croatian second-hand marketplaces: Njuškalo, Facebook Marketplace, Index oglasi and Vinted. Users leave reviews on individual listings ("oglasi") and sellers. Shaker scrapes comparable listings to find better prices, helps buyers negotiate, checks the seller's history, and checks whether messages from the other side are consistent with the listing (scam patterns, payment-link tricks).
+Vrijedi.Ly is a trust and price layer for Croatian second-hand marketplaces: Njuškalo, Facebook Marketplace, Index oglasi and Vinted. Users leave reviews on individual listings ("oglasi") and sellers. Vrijedi.Ly scrapes comparable listings to find better prices, helps buyers negotiate, checks the seller's history, and checks whether messages from the other side are consistent with the listing (scam patterns, payment-link tricks).
 
 ## Users
 

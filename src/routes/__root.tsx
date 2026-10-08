@@ -27,13 +27,18 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'Shaker',
+        title: 'Vrijedi.Ly',
       },
     ],
     links: [
       {
         rel: 'stylesheet',
         href: appCss,
+      },
+      {
+        rel: 'icon',
+        href: '/landing/icon.svg',
+        type: 'image/svg+xml',
       },
     ],
   }),

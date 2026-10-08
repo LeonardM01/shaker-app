@@ -6,7 +6,7 @@ import type { AuthFailure } from '#/features/auth/auth-port'
 
 export const authCopy = {
   signUp: {
-    pageTitle: 'Registracija · Shaker',
+    pageTitle: 'Registracija · Vrijedi.Ly',
     heading: 'Napravi račun',
     subtitle: 'Za kopiranje ponude, praćenje cijena i sve usporedive oglase.',
     submit: 'Napravi račun',
@@ -14,7 +14,7 @@ export const authCopy = {
     toggleAction: 'Prijavi se',
   },
   signIn: {
-    pageTitle: 'Prijava · Shaker',
+    pageTitle: 'Prijava · Vrijedi.Ly',
     heading: 'Prijavi se',
     subtitle: 'Upiši e-mail i lozinku ili nastavi s Googleom.',
     submit: 'Prijavi se',
