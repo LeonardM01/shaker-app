@@ -9,7 +9,7 @@ export const Route = createFileRoute('/api/extension/v1/sellers/$sellerId/review
     handlers: {
       OPTIONS: () => preflight(),
       GET: ({ request, params }) =>
-        handle('reviews setup', {}, () => getSellerReviews(extensionApiDeps(), params.sellerId, request)),
+        handle('reviews setup', { sellerId: params.sellerId }, () => getSellerReviews(extensionApiDeps(), params.sellerId, request)),
     },
   },
 })

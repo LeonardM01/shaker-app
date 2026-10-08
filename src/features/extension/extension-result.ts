@@ -5,11 +5,11 @@
 import type { PatternResult } from '#/features/check/scoring/scam'
 import type { CheckProgress, Report, ReviewItem, SellerSection } from '#/features/report/report-result'
 
-export type ExtensionReview = Omit<ReviewItem, 'markedHelpfulByViewer' | 'viewerCanReply'>
+type ExtensionReview = Omit<ReviewItem, 'markedHelpfulByViewer' | 'viewerCanReply'>
 
-export type ExtensionSeller = Omit<SellerSection, 'claimedByViewer' | 'claimable'>
+type ExtensionSeller = Omit<SellerSection, 'claimedByViewer' | 'claimable'>
 
-export type ExtensionReport = Omit<
+type ExtensionReport = Omit<
   Report,
   'viewer' | 'viewerCanReview' | 'ticks' | 'tracked' | 'seller' | 'reviews'
 > & {
@@ -46,6 +46,10 @@ export function toExtensionReview({
   return review
 }
 
+function toExtensionSeller({ claimedByViewer: _claimed, claimable: _claimable, ...seller }: SellerSection): ExtensionSeller {
+  return seller
+}
+
 export function toExtensionReport({
   viewer: _viewer,
   viewerCanReview: _canReview,
@@ -57,7 +61,7 @@ export function toExtensionReport({
 }: Report): ExtensionReport {
   return {
     ...report,
-    seller: seller && (({ claimedByViewer: _claimed, claimable: _claimable, ...rest }) => rest)(seller),
+    seller: seller && toExtensionSeller(seller),
     reviews: reviews.map(toExtensionReview),
   }
 }
